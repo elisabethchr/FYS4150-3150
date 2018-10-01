@@ -4,17 +4,17 @@ FYS4150/FYS3150: Project 2 by Eirik Bratli and Elisabeth Christensen
 
 Files included:
 
--jacobi_method.hpp    Functions for calculations used
+-jacobi_method.hpp ;   Functions for calculations used
 
--jacobi.cpp           For the first part of the project
+-jacobi.cpp         ;  For the first part of the project
 
--Ploting.py           For creating plots
+-Ploting.py          ; For creating plots
 
--Schrodinger1.cpp     For the second part, schrodinger equation with one electron
+-Schrodinger1.cpp    ; For the second part, schrodinger equation with one electron
 
--SL2electrons.cpp     For the second part, schrodinger equation with two electrons
+-SL2electrons.cpp    ; For the second part, schrodinger equation with two electrons
 
--Testfunc.hpp         Function with unit testing
+-Testfunc.hpp        ; Function with unit testing
 
 -Project_2.pro
 
