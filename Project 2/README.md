@@ -7,10 +7,15 @@ This project aims at the use of the Jacobi rotation method as an eigenvalue solv
 #### Files included:
 
 -jacobi_method.hpp
+
 -jacobi.cpp 
+
 -Ploting.py 
+
 -Schrodinger1.cpp 
+
 -SL2electrons.cpp 
+
 -Testfunc.hpp
 
 -Project_2.pro
