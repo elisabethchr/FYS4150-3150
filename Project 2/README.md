@@ -22,7 +22,7 @@ This project aims at the use of the Jacobi rotation method as an eigenvalue solv
 
 -.gitignore
 
-##### Folder with plots: 
+#### Folder with plots: 
 -Plot_pro2 copy
 
 
