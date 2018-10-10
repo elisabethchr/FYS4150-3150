@@ -1,3 +1,5 @@
-#Project 3
+# Project 3
 
-FYS4150/FYS3150: Project 2 by Eirik Bratli and Elisabeth Christensen
+FYS4150/FYS3150: Project 3 by Eirik Bratli and Elisabeth Christensen
+
+#### Project description:
