@@ -3,45 +3,47 @@
 #include <cmath>
 #include <fstream>
 #include <iomanip>
-//#include "Numpy.hpp"    // can make .npy files
 #include "Method_Earth_sun.hpp"
+
 
 using namespace std;
 using namespace arma;
 
-//ofstream ofile;     // create file for output
-
-//Initialconditions(int, vec, vec);
-//force(double, double);
-//Euler(int, mat,mat);
-//VelocityVerlet(int, mat,mat);
-//WriteFile(string, vec, vec)
 
 int main (int argc, char* argv[]){
   string filename1; string filename2;
-  int year;
-  if (argc <= 2){
-    cout << "Not enough arguments, need output filename for Euler and verlet, and N years" << endl;
+  int year; int N; int dim;
+  if (argc <= 4){
+    cout << "Not enough arguments, need output filename for Euler and verlet, N years and dimensions" << endl;
     exit(1);
   }
   else{
     filename1 = argv[1];
     filename2 = argv[2];
-    char* year = argv[3];
+    year = atoi(argv[3]);
+    dim = 3;//atoi(argv[4]);
+    //cout << "n=" << year << endl;
   }
-  int N = 365*year;
+  N = 365*year;
 
+  cout << "Eulers method:" << endl;
   string dataEuler = filename1;
   dataEuler.append(".txt");
-  mat velE = zeros(3,N); mat posE = zeros(3,N);
-  Euler(N, velE, posE);
-  WriteFile(filename1,N, velE, posE);
+  mat velE = zeros(dim,N); mat posE = zeros(dim,N);
+  mat accE = zeros(dim,N);
+  Euler(N, dim, accE,velE, posE, dataEuler);
 
+  //WriteFile(dataEuler,N,dim, velE, posE);
+
+  cout << "Velocity verlet method:" << endl;
   string dataVerlet = filename2;
   dataVerlet.append(".txt");
-  mat velV = zeros(3,N); mat posV = zeros(3,N);
-  VelocityVerlet(N, velV, posV);
-  WriteFile(filename2, N, velV, posV);
+  mat velV = zeros(dim, N); mat posV = zeros(dim, N);
+  mat accV = zeros(dim,N);
+  VelocityVerlet(N, dim, accV,velV, posV, dataVerlet);
+
+  //WriteFile(dataVerlet, N, dim, velV, posV);
+
 
   return 0;
 }
