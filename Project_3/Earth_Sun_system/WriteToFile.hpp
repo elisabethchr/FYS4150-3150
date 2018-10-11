@@ -17,14 +17,6 @@ int WriteFile(string filename, int N, int dim, mat A){
   for(int i=0; i<N-1; i++){
     for (int j=0; j < dim ; j++){
       ofile << setw(15) << setprecision(8) << A(j,i) << "  ";
-      /*
-      ofile << setw(15) << setprecision(8) << vel(1,i) << "  ";
-      ofile << setw(15) << setprecision(8) << vel(2,i) << "  ";
-      ofile << setw(15) << setprecision(8) << pos(0,i) << "  ";
-      ofile << setw(15) << setprecision(8) << pos(1,i) << "  ";
-      ofile << setw(15) << setprecision(8) << pos(2,i) << "  ";
-      */
-
     }
     ofile << "\n";
   }

@@ -21,7 +21,7 @@ int main (int argc, char* argv[]){
     filename1 = argv[1];
     filename2 = argv[2];
     year = atoi(argv[3]);
-    dim = 3;//atoi(argv[4]);
+    dim = 3; //atoi(argv[4]);
     //cout << "n=" << year << endl;
   }
   N = 365*year;
@@ -29,18 +29,16 @@ int main (int argc, char* argv[]){
   cout << "Eulers method:" << endl;
   string dataEuler = filename1;
   dataEuler.append(".txt");
-  mat velE = zeros(dim,N); mat posE = zeros(dim,N);
-  mat accE = zeros(dim,N);
-  Euler(N, dim, accE,velE, posE, dataEuler);
-
+  //mat velE = zeros(dim,N); mat posE = zeros(dim,N);mat accE = zeros(dim,N);
+  Euler(100*N, dim, dataEuler);
+  cout << "---------" << endl;
   //WriteFile(dataEuler,N,dim, velE, posE);
 
   cout << "Velocity verlet method:" << endl;
   string dataVerlet = filename2;
   dataVerlet.append(".txt");
-  mat velV = zeros(dim, N); mat posV = zeros(dim, N);
-  mat accV = zeros(dim,N);
-  VelocityVerlet(N, dim, accV,velV, posV, dataVerlet);
+  //mat velV = zeros(dim, N); mat posV = zeros(dim, N);mat accV = zeros(dim,N);
+  VelocityVerlet(N, dim, dataVerlet);
 
   //WriteFile(dataVerlet, N, dim, velV, posV);
 
