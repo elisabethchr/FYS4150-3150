@@ -12,7 +12,8 @@ using namespace arma;
 
 int main (int argc, char* argv[]){
   string filename1; string filename2;
-  int year; int N; int dim;
+  int year; int N; int dim = 3;
+  string PrYear;
   if (argc <= 4){
     cout << "Not enough arguments, need output filename for Euler and verlet, N years and dimensions" << endl;
     exit(1);
@@ -21,32 +22,69 @@ int main (int argc, char* argv[]){
     filename1 = argv[1];
     filename2 = argv[2];
     year = atoi(argv[3]);
-    dim = 3; //atoi(argv[4]);
+    PrYear = (argv[4]);
 
   }
-  //if (year >= 4){
-  N = 365*year;// + (int)0.26*4;
+
+  N = 365*year+2;
   cout << N << endl;
-  //}
-  //else {N = 365*year;}
-  string nyear = to_string(year);
+
+  double stepsPrYear = 365.25;
+  double epsilon = 1e-5;
+
   cout << "Eulers method:" << endl;
-  string dataEuler = filename1;
+  /*
+  string dataEuler1 = filename1;
 
-  dataEuler.append(nyear);
-  dataEuler.append("yr.txt");
-  //mat velE = zeros(dim,N); mat posE = zeros(dim,N);mat accE = zeros(dim,N);
-  Euler(N, dim, dataEuler);
+  //dataEuler1.append("yr.txt");
+  Euler(N, dim, dataEuler1, 0.1);
   cout << "---------" << endl;
+  */
+  string dataEuler2 = filename1;
 
+  dataEuler2.append(".txt");
+  Euler(N, dim, dataEuler2, epsilon, 1);
+  cout << "---------" << endl;
+  /*
+  string dataEuler3 = filename1;
 
+  //dataEuler3.append("yr.txt");
+  Euler(N, dim, dataEuler3, 10);
+  cout << "---------" << endl;
+*/
+  // Verlet
   cout << "Velocity verlet method:" << endl;
-  string dataVerlet = filename2;
-  dataVerlet.append(nyear);
-  dataVerlet.append("yr.txt");
-  //mat velV = zeros(dim, N); mat posV = zeros(dim, N);mat accV = zeros(dim,N);
-  VelocityVerlet(N, dim, dataVerlet);
+  /*
+  string dataVerlet1 = filename2;
 
+  //dataVerlet1.append("yr.txt");
+  VelocityVerlet(N, dim, dataVerlet1, 0.1);
+  cout << "---------" << endl;
+*/
+  string dataVerlet2 = filename2;
+
+  dataVerlet2.append(".txt");
+  VelocityVerlet(N, dim, dataVerlet2, epsilon, 1);
+  cout << "---------" << endl;
+/*
+  string dataVerlet3 = filename2;
+
+  //dataVerlet3.append("yr.txt");
+  VelocityVerlet(N, dim, dataVerlet3, 10);
+  cout << "---------" << endl;
+*/
+
+
+  // Escape Velocity:
+  string Vesc = filename2;
+  Vesc.append("Vesc");
+  //EscapeVelocity(N, dim, Vesc);
+
+
+  // Alterative gravitational Force:
+  string beta = filename2;
+  beta.append("beta");
+  AlterativeForce(N, dim);
 
   return 0;
 }
