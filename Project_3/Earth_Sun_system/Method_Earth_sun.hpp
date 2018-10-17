@@ -1,4 +1,4 @@
-// Header file:
+// Header file - not object oriented code:
 
 #include <iostream>
 #include <armadillo>

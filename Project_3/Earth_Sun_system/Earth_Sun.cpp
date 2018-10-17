@@ -1,3 +1,4 @@
+//main function for Earth_Sun system --> this we can push to the SolarSystem when we have a generalized code for all planets
 #include <iostream>
 #include <armadillo>
 #include <cmath>

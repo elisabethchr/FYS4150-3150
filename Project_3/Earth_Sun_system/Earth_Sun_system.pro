@@ -18,7 +18,6 @@ SOURCES += \
 
 HEADERS += \
         Method_Earth_sun.hpp \
-        EnergyTest.hpp\
     forwardeuler.h\
     initialize.h \
     gravitationalforce.h \
@@ -26,3 +25,4 @@ HEADERS += \
     velocityverlet.h
     solarsystem.h
     WriteToFile.hpp
+    EnergyTest.hpp
