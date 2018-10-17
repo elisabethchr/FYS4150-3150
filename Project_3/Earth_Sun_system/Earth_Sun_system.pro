@@ -8,7 +8,21 @@ INCLUDEPATH += \
         C:\Users\Elisabeth\Documents\FYS3150\Project_3
 
 SOURCES += \
-        Earth_Sun_system.cpp \
-    earth_sun_system.cpp
+        Earth_Sun.cpp \
+    forwardeuler.cpp \
+    initialize.cpp \
+    gravitationalforce.cpp \
+    celestialobject.cpp \
+    velocityverlet.cpp
+    solarsystem.cpp
 
 HEADERS += \
+        Method_Earth_sun.hpp \
+        EnergyTest.hpp\
+    forwardeuler.h\
+    initialize.h \
+    gravitationalforce.h \
+    celestialobject.h \
+    velocityverlet.h
+    solarsystem.h
+    WriteToFile.hpp

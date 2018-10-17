@@ -3,6 +3,7 @@
 
 *~
 *.txt
+*.png
 *.autosave
 *.a
 *.core

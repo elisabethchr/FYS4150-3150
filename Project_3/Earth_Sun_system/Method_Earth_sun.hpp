@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <math.h>
 #include "WriteToFile.hpp"
-#include "UnitTesting.hpp"
+//#include "UnitTesting.hpp"
 
 using namespace std;
 using namespace arma;
@@ -80,7 +80,7 @@ void Euler(int N, int dim, string filename, double eps, double dt){
 
       acc(j,i) = force(pos(j,i), r);
       vel(j, i+1) = vel(j, i) + h*acc(j,i);
-      pos(j, i+1) = pos(j, i) + h*vel(j,i); 
+      pos(j, i+1) = pos(j, i) + h*vel(j,i);
 
     }
 
@@ -95,12 +95,12 @@ void Euler(int N, int dim, string filename, double eps, double dt){
   double rN = sqrt(pow(pos(0, N-1),2) + pow(pos(1, N-1),2) + pow(pos(2, N-1),2));
   double v2N = vel(0,N-1)*vel(0,N-1) + vel(1,N-1)*vel(1,N-1) + vel(1,N-1)*vel(1,N-1);
   cout << "--> UnitTesting -->" << endl;
-
+/*
   PositionTest(pos(0,0), pos(0,366), eps*100);
   EnergyTest(v20, v2N, r0, rN, eps);
   AngularMomentumTest(pos, vel, eps, N);
   WriteFile(filename, N, dim, pos);
-
+*/
 }
 
 
@@ -150,12 +150,13 @@ void VelocityVerlet(int N, int dim, string filename, double eps, double dt){
   double rN = sqrt(pow(pos(0, N-1),2) + pow(pos(1, N-1),2) + pow(pos(2, N-1),2));
   double v2N = vel(0,N-1)*vel(0,N-1) + vel(1,N-1)*vel(1,N-1) + vel(1,N-1)*vel(1,N-1);
   cout << "--> UnitTesting -->" << endl;
-
+/*
   PositionTest(pos(0,0), pos(0,366), eps*100);
   EnergyTest(v20, v2N, r0, rN, eps);
   AngularMomentumTest(pos, vel, eps, N);
   //pos.save("testpos.txt", arma_ascii);
   WriteFile(filename, N, dim, pos);
+*/
 }
 
 
