@@ -27,6 +27,8 @@ public:
     void Verlet(double dt);
     void Integrate(int dim, int N, string filename, double eps, double dt);
 //    double step (double stepsPrYear){return 1.0/stepsPrYear;}
+    mat InitialPosition(mat pos);
+    mat InitialVelocity(mat vel);
     mat getPos(){return pos;}
     mat getVel(){return vel;}
     mat getAcc(){return acc;}

@@ -8,7 +8,7 @@
 //#include "WriteToFile.hpp"
 //#include "EnergyTest.hpp"
 #include "velocityverlet.h"
-#include "initialize.h"
+//#include "initialize.h"
 #include "gravitationalforce.h"
 
 using namespace std;
@@ -28,8 +28,8 @@ void VelocityVerlet::Integrate(int N, int dim, string filename, double eps, doub
   double hh_half = h*h/2.0;
   double h_half = h/2.0;
   mat acc = zeros(dim, N); mat vel = zeros(dim, N); mat pos = zeros(dim, N);
-  vel = Initialize::Initialvelocity(vel, dim, N);
-  pos = Initialize::Initialposition(pos, dim, N);
+  vel = InitialVelocity(vel);
+  pos = InitialPosition(pos);
 
   vec t = zeros(N);
 
@@ -74,3 +74,22 @@ void VelocityVerlet::Integrate(int N, int dim, string filename, double eps, doub
 //  cout << "--> UnitTesting -->" << endl;
   cout << "Verlet works!" << endl;
 }
+
+  mat VelocityVerlet::InitialPosition(mat pos){
+    double x0 = pos(0,0) = 9.528047055398201E-01;       // AU
+    double y0 = pos(1,0) = 3.053612869840809E-01;       // AU
+    double z0 = pos(2,0) = -9.272902073041313E-05;      // AU
+    cout <<"Initial position in x, y, z direction:" << endl;
+    cout << x0 << " " << y0 <<" " << z0 << endl;
+    return pos;
+  }
+
+  mat VelocityVerlet::InitialVelocity(mat vel){
+  // JPL values are AU/day so multiply with 365.25
+    double vx0 = vel(0,0) = -5.428888690270241E-03*365.25;      // AU/yr
+    double vy0 = vel(1,0) = 1.636353485946535E-02*365.25;       // AU/yr
+    double vz0 = vel(2,0) = -4.491683144318728E-07*365.25;      // AU/yr
+    cout <<"Initial velocity in x, y, z direction:" << endl;
+    cout << vx0 << " " << vy0 <<" " << vz0 << endl;
+    return vel;
+  }
