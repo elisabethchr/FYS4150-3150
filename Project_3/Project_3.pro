@@ -14,7 +14,4 @@ x64: LIBS += \
     -llapack_win64_MT
 
 SUBDIRS += \
-    Jacobis_algorithm \
-    SE_1_electron \
-    SE_2_electrons \
     Earth_Sun_system
