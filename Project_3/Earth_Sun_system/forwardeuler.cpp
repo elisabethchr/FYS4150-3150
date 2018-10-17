@@ -19,7 +19,7 @@ void ForwardEuler::Euler(double dt)// :m_dt(dt)
     m_dt = dt;
 }
 
-void ForwardEuler::Integrate(int N, int dim, string filename, double eps, double dt){
+mat ForwardEuler::Integrate(int N, int dim, string filename, double eps, double dt){
   /*
   Compute the position of the planet using forward Euler method.
   */
@@ -56,4 +56,15 @@ void ForwardEuler::Integrate(int N, int dim, string filename, double eps, double
   double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );
   cout << setprecision(10) << "Time used: " << time_used << " s at " << N/365 <<" yr" << endl;
   cout << "Euler works!" << endl;
+
+//  getPos(pos);
+//  getVel(vel);
+  return pos;
 }
+  mat getPos(mat pos){
+    return pos;
+  }
+
+  mat getVel(mat vel){
+    return vel;
+  }

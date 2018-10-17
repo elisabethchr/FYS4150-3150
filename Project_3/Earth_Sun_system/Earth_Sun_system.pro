@@ -13,7 +13,7 @@ SOURCES += \
     initialize.cpp \
     gravitationalforce.cpp \
     celestialobject.cpp \
-    velocityverlet.cpp
+    velocityverlet.cpp \
     solarsystem.cpp
 
 HEADERS += \
@@ -22,7 +22,7 @@ HEADERS += \
     initialize.h \
     gravitationalforce.h \
     celestialobject.h \
-    velocityverlet.h
+    velocityverlet.h \
     solarsystem.h
     WriteToFile.hpp
     EnergyTest.hpp

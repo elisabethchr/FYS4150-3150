@@ -26,10 +26,10 @@ public:
 //public:
     double m_dt;
     void Euler(double dt);
-    void Integrate(int dim, int N, string filename, double eps, double dt);
+    mat Integrate(int dim, int N, string filename, double eps, double dt);
 //    double step (double stepsPrYear){return 1.0/stepsPrYear;}
-    mat getPos(){return pos;}
-    mat getVel(){return vel;}
-    mat getAcc(){return acc;}
+    mat getPos(mat pos){return pos;}
+    mat getVel(mat vel){return vel;}
+    mat getAcc(mat acc){return acc;}
 };
 #endif // FORWARDEULER_H

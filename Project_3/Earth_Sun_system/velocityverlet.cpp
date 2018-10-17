@@ -54,7 +54,6 @@ void VelocityVerlet::Integrate(int N, int dim, string filename, double eps, doub
       vel(j, i+1) = vel(j,i) + h_half*(acc(j,i+1) + acc(j,i));
 
     }
-    //cout << pos(0,i+1) << " " << pos(1,i+1) << " " << pos(2, i+1) << endl;
   }
   finish = clock();   // end timing
   double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );
@@ -62,8 +61,16 @@ void VelocityVerlet::Integrate(int N, int dim, string filename, double eps, doub
 
   cout << t(N-1) << " " << r2<< endl;
 
+
+
+
+/*should we take unit testing within each iteration class (euler/verlet)
+ * or should we include these in e.g. the main file, or the solarsystem class?
+ * The variables below are currently not being used
+ */
+
   double rN = sqrt(pow(pos(0, N-1),2) + pow(pos(1, N-1),2) + pow(pos(2, N-1),2));
   double v2N = vel(0,N-1)*vel(0,N-1) + vel(1,N-1)*vel(1,N-1) + vel(1,N-1)*vel(1,N-1);
-  cout << "--> UnitTesting -->" << endl;
+//  cout << "--> UnitTesting -->" << endl;
   cout << "Verlet works!" << endl;
 }

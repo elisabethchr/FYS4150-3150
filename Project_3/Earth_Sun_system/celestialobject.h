@@ -27,6 +27,8 @@ public:
 
     CelestialObject(mat pos, mat vel, double mass_);
     //: myname(name), m(mass), x(X), y(Y), z(Z), vx(vX), vy(vY), vz(vZ){} //X, Y, Z, vX, vY, vZ = initial conditions
+
+
 /*
     //declare functions:
     void getPosition();

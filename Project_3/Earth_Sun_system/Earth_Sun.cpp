@@ -7,6 +7,7 @@
 #include "Method_Earth_sun.hpp"
 #include "forwardeuler.h"
 #include "velocityverlet.h"
+#include "solarsystem.h"
 
 using namespace std;
 using namespace arma;
@@ -46,12 +47,20 @@ int main (int argc, char* argv[]){
   double stepsPrYear = 365.25;
   double epsilon = 1e-5;
   double dt = 0.001;
+  mat pos_euler;
+  mat pos_verlet;
+
+//  SolarSystem solarsystem;
+// CelestialObject &sun = solarsystem.createCelestialBody( vec3(0,0,0), vec3(0,0,0), 1.0 );
 
   class ForwardEuler integrate_euler;     //need object of the class (integrate_euler) to use the member function Integrate within the class
-  integrate_euler.Integrate(N, dim, filename1, epsilon, dt);
+  pos_euler = integrate_euler.Integrate(N, dim, filename1, epsilon, dt);
+  cout << pos_euler << endl;
 
   class VelocityVerlet integrate_verlet;  //need object of the class (integrate_verlet) to use the member function Integrate within the class
+  //pos_verlet =
   integrate_verlet.Integrate(N, dim, filename1, epsilon, dt);
+
 
 
 //for (int i=0, i<filenames.size());
