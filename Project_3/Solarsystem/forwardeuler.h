@@ -28,6 +28,8 @@ public:
     void Euler(double dt);
     mat Integrate(int dim, int N, string filename, double eps, double dt);
 //    double step (double stepsPrYear){return 1.0/stepsPrYear;}
+    mat InitialPosition(mat pos);
+    mat InitialVelocity(mat vel);
     mat getPos(mat pos){return pos;}
     mat getVel(mat vel){return vel;}
     mat getAcc(mat acc){return acc;}
