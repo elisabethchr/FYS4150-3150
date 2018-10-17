@@ -9,6 +9,7 @@
 *.core
 *.moc
 *.o
+*.x
 *.obj
 *.orig
 *.rej
