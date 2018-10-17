@@ -24,6 +24,7 @@ void SolarSystem::calculateForcesAndEnergy()
         object.force.zeros();
     }
 */
+/*
     for(int i=0; i<numberOfObjects(); i++) {
         CelestialObject &object1 = m_objects[i];
         for(int j=i+1; j<numberOfObjects(); j++) {
@@ -36,6 +37,7 @@ void SolarSystem::calculateForcesAndEnergy()
 
         m_kineticEnergy += 0.5*object1.mass*object1.velocity.lengthSquared();
     }
+*/
 }
 
 int SolarSystem::numberOfObjects() const
@@ -57,7 +59,7 @@ double SolarSystem::kineticEnergy() const
 {
     return m_kineticEnergy;
 }
-
+/*
 void SolarSystem::writeToFile(string filename)
 {
     if(!m_file.good()) {
@@ -74,13 +76,14 @@ void SolarSystem::writeToFile(string filename)
         m_file << " " << object.position.x() << " " << object.position.y() << " " << object.position.z() << "\n";
     }
 }
-
+*/
+/*
 vec3 SolarSystem::angularMomentum() const
 {
     return m_angularMomentum;
 }
-
-std::vector<CelestialBody> &SolarSystem::bodies()
+*/
+std::vector<CelestialObject> &SolarSystem::objects()
 {
-    return m_bodies;
+    return m_objects;
 }
