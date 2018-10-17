@@ -55,13 +55,12 @@ int main (int argc, char* argv[]){
 
   class ForwardEuler integrate_euler;     //need object of the class (integrate_euler) to use the member function Integrate within the class
   pos_euler = integrate_euler.Integrate(N, dim, filename1, epsilon, dt);
+  cout  << "pos_euler: " << endl;
   cout << pos_euler << endl;
 
   class VelocityVerlet integrate_verlet;  //need object of the class (integrate_verlet) to use the member function Integrate within the class
   //pos_verlet =
   integrate_verlet.Integrate(N, dim, filename1, epsilon, dt);
-
-
 
 //for (int i=0, i<filenames.size());
 //  for(int i<0; i<filenames.size(), i++)
