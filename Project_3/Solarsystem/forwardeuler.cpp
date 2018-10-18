@@ -11,24 +11,30 @@
 //#include "initialize.h"
 #include "gravitationalforce.h"
 
-//using namespace std::cout; using namespace std::endl;
-//using namespace arma::mat; using namespace arma::vec; using namespace arma::zeros;
-
 void ForwardEuler::Euler(double dt)// :m_dt(dt)
 {
     m_dt = dt;
 }
 
-arma::mat ForwardEuler::Integrate(int N, int dim, std::string obj, double eps, double dt){
+arma::mat ForwardEuler::Integrate(vec3 position, vec3 velocity, double mass){ // int N, int dim, std::string obj){
   /*
   Compute the position of the planet using forward Euler method.
   */
-  double h = 1.0/((double) 365.25)*dt; //1.0/((double) 365.25);
-  arma::mat vel = arma::zeros(dim, N); arma::mat pos = arma::zeros(dim, N); arma::mat acc = arma::zeros(dim, N);
+//  double dt = 0.001;
+  int N = 367;
+  int dim = 3;
+  double h = 1.0/((double) 365.25); //1.0/((double) 365.25);
+  arma::mat vel = arma::zeros(dim, N);
+  arma::mat pos = arma::zeros(dim, N);
+  arma::mat acc = arma::zeros(dim, N);
 
 //  Initialize initialize;
-  vel = InitialVelocity(vel);
-  pos = InitialPosition(pos);
+
+  vel(0, 0) = velocity(0); vel(1, 0) = velocity(1); vel(2, 0) = velocity(2);
+  pos(0, 0) = position(0); pos(1, 0) = position(1); pos(2, 0) = position(2);
+
+//  vel = InitialVelocity(vel);
+//  pos = InitialPosition(pos);
 
   arma::vec t = arma::zeros(N);
 
@@ -67,7 +73,7 @@ arma::mat ForwardEuler::Integrate(int N, int dim, std::string obj, double eps, d
     return vel;
   }
 */
-
+/*
   arma::mat ForwardEuler::InitialPosition(arma::mat pos){
     double x0 = pos(0,0) = 9.528047055398201E-01;       // AU
     double y0 = pos(1,0) = 3.053612869840809E-01;       // AU
@@ -86,3 +92,4 @@ arma::mat ForwardEuler::Integrate(int N, int dim, std::string obj, double eps, d
     std::cout << vx0 << " " << vy0 <<" " << vz0 << std::endl;
     return vel;
   }
+*/

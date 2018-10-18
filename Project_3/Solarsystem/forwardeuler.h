@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iomanip>
 #include <math.h>
+#include "vec3.h"
 
 //using namespace std;
 //using namespace arma;
@@ -20,18 +21,21 @@ class ForwardEuler
 //private:
 public:
     arma::mat vel, pos, acc;
+    vec3 ve1l, pos1;
+    double mass;
 //    double x0, y0, z0;
 //    double vx0, vy0, vz0;
 
 //public:
     double m_dt;
     void Euler(double dt);
-    arma::mat Integrate(int dim, int N, std::string filename, double eps, double dt);
+    arma::mat Integrate(vec3 pos1, vec3 vel1, double mass);//int dim, int N, std::string filename);
+//    arma::mat
 //    double step (double stepsPrYear){return 1.0/stepsPrYear;}
-    arma::mat InitialPosition(arma::mat pos);
-    arma::mat InitialVelocity(arma::mat vel);
-    arma::mat getPos(arma::mat pos){return pos;}
-    arma::mat getVel(arma::mat vel){return vel;}
-    arma::mat getAcc(arma::mat acc){return acc;}
+//    arma::mat InitialPosition(arma::mat pos);
+//    arma::mat InitialVelocity(arma::mat vel);
+//   arma::mat getPos(arma::mat pos){return pos;}
+//    arma::mat getVel(arma::mat vel){return vel;}
+//    arma::mat getAcc(arma::mat acc){return acc;}
 };
 #endif // FORWARDEULER_H

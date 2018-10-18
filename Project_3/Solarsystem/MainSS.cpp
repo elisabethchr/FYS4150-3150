@@ -6,11 +6,15 @@
 //#include "Method_Earth_sun.hpp"
 #include "forwardeuler.h"
 #include "velocityverlet.h"
+#include "celestialobject.h"
+#include "solarsystem.h"
+#include "vec3.h"
 //#include "initialize.h"
 #include "Readfile.h"
 //#include "readfile.hpp"
-using namespace std;
-using namespace arma;
+
+//using namespace std;
+//using namespace arma;
 
 
 int main(int nArgs, char **arguments)
@@ -22,16 +26,16 @@ int main(int nArgs, char **arguments)
   double stepsPrYear = 365.25;
   double epsilon = 1e-5;
   double dt = 0.001;
-  mat pos_euler;
-  mat pos_verlet;
+  arma::mat pos_euler;
+  arma::mat pos_verlet;
 
 //  SolarSystem solarsystem;
 // CelestialObject &sun = solarsystem.createCelestialBody( vec3(0,0,0), vec3(0,0,0), 1.0 );
-  string obj = "sun";
+  std::string obj = "sun";
   ForwardEuler integrate_euler;     //need object of the class (integrate_euler) to use the member function Integrate within the class
   pos_euler = integrate_euler.Integrate(numTimesteps, dim, obj, epsilon, dt);
-  cout  << "pos_euler: " << endl;
-  cout << pos_euler << endl;
+  std::cout  << "pos_euler: " << std::endl;
+  std::cout << pos_euler << std::endl;
 
   VelocityVerlet integrate_verlet;  //need object of the class (integrate_verlet) to use the member function Integrate within the class
   pos_verlet = integrate_verlet.Integrate(numTimesteps, dim, obj, epsilon, dt);
@@ -39,20 +43,20 @@ int main(int nArgs, char **arguments)
 
   // Call initial values: 0-CoM, 1-Mercery,2-venus,3-Earth,4-mars,5-jupiter,6-saturn,
   // 7-uranus,8-neptune,9-pluto. Both position and velocity is listed: x, y, z direction
-  mat pos0 = Readfile("Initialposition.txt");     // AU
-  mat vel0 = Readfile("Initialvelocity.txt");     // AU/yr
+  arma::mat pos0 = Readfile("Initialposition.txt");     // AU
+  arma::mat vel0 = Readfile("Initialvelocity.txt");     // AU/yr
   pos0.print("initpos");
   vel0.print("initvel");
-  vec pos0_CoM = zeros(3); vec vel0_CoM = zeros(3);           // Center of mass
-  vec pos0_Mercery = zeros(3); vec vel0_Mercery = zeros(3);
-  vec pos0_Venus = zeros(3); vec vel0_Venus = zeros(3);
-  vec pos0_Earth = zeros(3); vec vel0_Earth = zeros(3);
-  vec pos0_Mars = zeros(3); vec vel0_Mars = zeros(3);
-  vec pos0_Jupiter = zeros(3); vec vel0_Jupiter = zeros(3);
-  vec pos0_Saturn = zeros(3); vec vel0_Saturn = zeros(3);
-  vec pos0_Uranus = zeros(3); vec vel0_Uranus = zeros(3);
-  vec pos0_Neptune = zeros(3); vec vel0_Neptune = zeros(3);
-  vec pos0_Pluto = zeros(3); vec vel0_Pluto = zeros(3);
+  arma::vec pos0_CoM = arma::zeros(3); arma::vec vel0_CoM = arma::zeros(3);           // Center of mass
+  arma::vec pos0_Mercery = arma::zeros(3); arma::vec vel0_Mercery = arma::zeros(3);
+  arma::vec pos0_Venus = arma::zeros(3); arma::vec vel0_Venus = arma::zeros(3);
+  arma::vec pos0_Earth = arma::zeros(3); arma::vec vel0_Earth = arma::zeros(3);
+  arma::vec pos0_Mars = arma::zeros(3); arma::vec vel0_Mars = arma::zeros(3);
+  arma::vec pos0_Jupiter = arma::zeros(3); arma::vec vel0_Jupiter = arma::zeros(3);
+  arma::vec pos0_Saturn = arma::zeros(3); arma::vec vel0_Saturn = arma::zeros(3);
+  arma::vec pos0_Uranus = arma::zeros(3); arma::vec vel0_Uranus = arma::zeros(3);
+  arma::vec pos0_Neptune = arma::zeros(3); arma::vec vel0_Neptune = arma::zeros(3);
+  arma::vec pos0_Pluto = arma::zeros(3); arma::vec vel0_Pluto = arma::zeros(3);
 
   for (int j=0; j<3;j++){
     pos0_CoM(j) = pos0(0,j); vel0_CoM(j) = vel0(0,j);
@@ -66,6 +70,23 @@ int main(int nArgs, char **arguments)
     pos0_Neptune(j) = pos0(8,j); vel0_Neptune(j) = vel0(8,j);
     pos0_Pluto(j) = pos0(9,j); vel0_Pluto(j) = vel0(9,j);
     }
+
+    SolarSystem SolarSystem;
+
+    CelestialObject &sun = SolarSystem.createCelestialObject( vec3(0,0,0), vec3(0,0,0), 1.0 );
+
+    // We don't need to store the reference, but just call the function without a left hand side
+    double x0 = 9.528047055398201E-01;       // AU
+    double y0 = 3.053612869840809E-01;       // AU
+    double z0 = -9.272902073041313E-05;      // AU
+    double vx0 = -5.428888690270241E-03*365.25;      // AU/yr
+    double vy0 = 1.636353485946535E-02*365.25;       // AU/yr
+    double vz0 = -4.491683144318728E-07*365.25;      // AU/yr
+
+    CelestialObject &earth = SolarSystem.createCelestialObject(vec3 (pos0_Earth(0), pos0_Earth(1), pos0_Earth(2)), vec3 (vel0_Earth(0), vel0_Earth(1), vel0_Earth(2)), 3e-6 );
+
+    // To get a list (a reference, not copy) of all the bodies in the solar system, we use the .bodies() function
+    std::vector<CelestialObject> &objects = SolarSystem.objects();
 
 
   //SolarSystem = SolarSystem;

@@ -1,4 +1,5 @@
 #include "solarsystem.h"
+#include "gravitationalforce.h"
 #include <iostream>
 //using namespace std;
 
@@ -24,7 +25,7 @@ void SolarSystem::calculateForcesAndEnergy()
         object.force.zeros();
     }
 */
-/*
+
     for(int i=0; i<numberOfObjects(); i++) {
         CelestialObject &object1 = m_objects[i];
         for(int j=i+1; j<numberOfObjects(); j++) {
@@ -33,11 +34,13 @@ void SolarSystem::calculateForcesAndEnergy()
             vec3 deltaRVector = object1.position - object2.position;
             double dr = deltaRVector.length();
             // Calculate the force and potential energy here
+
+            GravitationalForce::Gravity(&object1, &object2);
         }
 
         m_kineticEnergy += 0.5*object1.mass*object1.velocity.lengthSquared();
     }
-*/
+
 }
 
 int SolarSystem::numberOfObjects() const

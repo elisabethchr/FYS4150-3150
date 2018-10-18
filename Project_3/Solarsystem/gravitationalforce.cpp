@@ -31,7 +31,8 @@ double GravitationalForce::Force(double pos, double r)
     {
         object_a = a;
         object_b = b;
-        G = acos(-1);
+        double pi = acos(-1);
+        double G = 4*pi*pi;
 
         vec3 F1;
         vec3 F2;

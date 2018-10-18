@@ -21,7 +21,7 @@ class GravitationalForce
     double G;
 
 public:
-    static double Force(double pos, double r);
+    double Force(double pos, double r);
     double Gravity(CelestialObject *a, CelestialObject *b);
 };
 
