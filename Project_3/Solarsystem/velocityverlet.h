@@ -10,28 +10,28 @@
 #include <iomanip>
 #include <math.h>
 
-using namespace std;
-using namespace arma;
+//using namespace std;
+//using namespace arma;
 
 class VelocityVerlet
 {
 
 //private:
 public:
-    mat vel, pos, acc;
+    arma::mat vel, pos, acc;
 //    double x0, y0, z0;
 //    double vx0, vy0, vz0;
 
 //public:
     double m_dt;
     void Verlet(double dt);
-    void Integrate(int dim, int N, string filename, double eps, double dt);
+    arma::mat Integrate(int dim, int N, std::string filename, double eps, double dt);
 //    double step (double stepsPrYear){return 1.0/stepsPrYear;}
-    mat InitialPosition(mat pos);
-    mat InitialVelocity(mat vel);
-    mat getPos(){return pos;}
-    mat getVel(){return vel;}
-    mat getAcc(){return acc;}
+    arma::mat InitialPosition(arma::mat pos);
+    arma::mat InitialVelocity(arma::mat vel);
+    arma::mat getPos(){return pos;}
+    arma::mat getVel(){return vel;}
+    arma::mat getAcc(){return acc;}
 };
 
 #endif // VELOCITYVERLET_H

@@ -8,8 +8,9 @@
 #include <fstream>
 #include <iomanip>
 #include <math.h>
+#include "vec3.h"
 
-using namespace arma;
+//using namespace arma;
 
 class CelestialObject
 {
@@ -21,11 +22,14 @@ class CelestialObject
 
 
 public:
-    mat position;
-    mat velocity;
+    vec3 position;
+    vec3 velocity;
+    vec3 force;
     double mass;
 
-    CelestialObject(mat pos, mat vel, double mass_);
+    CelestialObject(vec3 pos, vec3 vel, double mass_);
+    void addForce(vec3 addF);
+    void resetForce();
     //: myname(name), m(mass), x(X), y(Y), z(Z), vx(vX), vy(vY), vz(vZ){} //X, Y, Z, vX, vY, vZ = initial conditions
 
 

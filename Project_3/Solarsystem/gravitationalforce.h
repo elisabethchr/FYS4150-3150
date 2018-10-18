@@ -8,14 +8,21 @@
 #include <fstream>
 #include <iomanip>
 #include <math.h>
+#include "celestialobject.h"
+#include "vec3.h"
 
-using namespace std;
-using namespace arma;
+//using namespace std;
+//using namespace arma;
 
 class GravitationalForce
 {
+    CelestialObject* object_a;
+    CelestialObject* object_b;
+    double G;
+
 public:
     static double Force(double pos, double r);
+    double Gravity(CelestialObject *a, CelestialObject *b);
 };
 
 #endif // GRAVITATIONALFORCE_H

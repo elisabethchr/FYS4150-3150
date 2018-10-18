@@ -11,31 +11,29 @@
 //#include "initialize.h"
 #include "gravitationalforce.h"
 
-using namespace std;
-using namespace arma;
+//using namespace std::cout; using namespace std::endl;
+//using namespace arma::mat; using namespace arma::vec; using namespace arma::zeros;
 
 void ForwardEuler::Euler(double dt)// :m_dt(dt)
 {
     m_dt = dt;
 }
 
-mat ForwardEuler::Integrate(int N, int dim, string filename, double eps, double dt){
+arma::mat ForwardEuler::Integrate(int N, int dim, std::string obj, double eps, double dt){
   /*
   Compute the position of the planet using forward Euler method.
   */
   double h = 1.0/((double) 365.25)*dt; //1.0/((double) 365.25);
-  mat vel = zeros(dim, N); mat pos = zeros(dim, N); mat acc = zeros(dim, N);
+  arma::mat vel = arma::zeros(dim, N); arma::mat pos = arma::zeros(dim, N); arma::mat acc = arma::zeros(dim, N);
 
 //  Initialize initialize;
   vel = InitialVelocity(vel);
   pos = InitialPosition(pos);
 
-  vec t = zeros(N);
-  double r0 = sqrt(pow(pos(0,0),2) + pow(pos(1,0),2) + pow(pos(2,0),2));
-  double v20 = vel(0,0)*vel(0,0) + vel(1,0)*vel(1,0) + vel(1,0)*vel(1,0);
+  arma::vec t = arma::zeros(N);
 
-  clock_t start, finish;
-  start = clock();  // start timing
+  std::clock_t start, finish;
+  start = std::clock();  // start timing
 
   // Integrating loop:
   for (int i=0; i<N-1; i++){
@@ -51,10 +49,10 @@ mat ForwardEuler::Integrate(int N, int dim, string filename, double eps, double 
     }
 
   }
-  finish = clock();   // end timing
+  finish = std::clock();   // end timing
   double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );
-  cout << setprecision(10) << "Time used: " << time_used << " s at " << N/365 <<" yr" << endl;
-  cout << "Euler works!" << endl;
+  std::cout << std::setprecision(10) << "Time used: " << time_used << " s at " << N/365 <<" yr" << std::endl;
+  std::cout << "Euler works!" << std::endl;
 
 //  getPos(pos);
 //  getVel(vel);
@@ -70,21 +68,21 @@ mat ForwardEuler::Integrate(int N, int dim, string filename, double eps, double 
   }
 */
 
-  mat ForwardEuler::InitialPosition(mat pos){
+  arma::mat ForwardEuler::InitialPosition(arma::mat pos){
     double x0 = pos(0,0) = 9.528047055398201E-01;       // AU
     double y0 = pos(1,0) = 3.053612869840809E-01;       // AU
     double z0 = pos(2,0) = -9.272902073041313E-05;      // AU
-    cout <<"Initial position in x, y, z direction:" << endl;
-    cout << x0 << " " << y0 <<" " << z0 << endl;
+    std::cout <<"Initial position in x, y, z direction:" << std::endl;
+    std::cout << x0 << " " << y0 <<" " << z0 << std::endl;
     return pos;
   }
 
-  mat ForwardEuler::InitialVelocity(mat vel){
+  arma::mat ForwardEuler::InitialVelocity(arma::mat vel){
   // JPL values are AU/day so multiply with 365.25
     double vx0 = vel(0,0) = -5.428888690270241E-03*365.25;      // AU/yr
     double vy0 = vel(1,0) = 1.636353485946535E-02*365.25;       // AU/yr
     double vz0 = vel(2,0) = -4.491683144318728E-07*365.25;      // AU/yr
-    cout <<"Initial velocity in x, y, z direction:" << endl;
-    cout << vx0 << " " << vy0 <<" " << vz0 << endl;
+    std::cout <<"Initial velocity in x, y, z direction:" << std::endl;
+    std::cout << vx0 << " " << vy0 <<" " << vz0 << std::endl;
     return vel;
   }

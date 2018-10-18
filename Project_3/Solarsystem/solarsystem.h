@@ -10,7 +10,7 @@ class SolarSystem
 {
 public:
     SolarSystem();
-    CelestialObject &createCelestialObject(mat position, mat velocity, double mass);
+    CelestialObject &createCelestialObject(vec3 position, vec3 velocity, double mass);
     void calculateForcesAndEnergy();
     int numberOfObjects() const;
 

@@ -5,21 +5,18 @@
 #include <fstream>
 #include <iomanip>
 #include <math.h>
-//#include "WriteToFile.hpp"
-//#include "EnergyTest.hpp"
 #include "velocityverlet.h"
-//#include "initialize.h"
 #include "gravitationalforce.h"
 
-using namespace std;
-using namespace arma;
+//using namespace std;
+//using namespace arma;
 
 void VelocityVerlet::Verlet(double dt)// :m_dt(dt)
 {
     m_dt = dt;
 }
 
-void VelocityVerlet::Integrate(int N, int dim, string filename, double eps, double dt){
+arma::mat VelocityVerlet::Integrate(int N, int dim, std::string filename, double eps, double dt){
   /*
   Compute the position of the planets using velocity verlet method.
   */
@@ -27,17 +24,14 @@ void VelocityVerlet::Integrate(int N, int dim, string filename, double eps, doub
   double h = 1/((double) 365.25)*dt;//1.0/(365.25);
   double hh_half = h*h/2.0;
   double h_half = h/2.0;
-  mat acc = zeros(dim, N); mat vel = zeros(dim, N); mat pos = zeros(dim, N);
+  arma::mat acc = arma::zeros(dim, N); arma::mat vel = arma::zeros(dim, N); arma::mat pos = arma::zeros(dim, N);
   vel = InitialVelocity(vel);
   pos = InitialPosition(pos);
 
-  vec t = zeros(N);
+  arma::vec t = arma::zeros(N);
 
-  double r0 = sqrt(pow(pos(0,0),2) + pow(pos(1,0),2) + pow(pos(2,0),2));
-  double v20 = vel(0,0)*vel(0,0) + vel(1,0)*vel(1,0) + vel(1,0)*vel(1,0);
-
-  clock_t start, finish;
-  start = clock();  // start timing
+  std::clock_t start, finish;
+  start = std::clock();  // start timing
 
   for (int i=0; i<N-1; i++){
     double r = sqrt(pos(0, i)*pos(0, i) + pos(1, i)*pos(1, i) + pos(2, i)*pos(2, i));
@@ -55,41 +49,43 @@ void VelocityVerlet::Integrate(int N, int dim, string filename, double eps, doub
 
     }
   }
-  finish = clock();   // end timing
+  finish = std::clock();   // end timing
   double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );
-  cout << setprecision(10) << "Time used: " << time_used << " s at " << N/365 <<" yr" << endl;
+  std::cout << std::setprecision(10) << "Time used: " << time_used << " s at " << N/365 <<" yr" << std::endl;
 
-  cout << t(N-1) << " " << r2<< endl;
-
+  std::cout << t(N-1) << " " << r2<< std::endl;
+  std::cout << "Verlet works!" << std::endl;
+  return pos;
 
 
 
 /*should we take unit testing within each iteration class (euler/verlet)
- * or should we include these in e.g. the main file, or the solarsystem class?
- * The variables below are currently not being used
+ * or should we include these in e.g. the MainSS file, or the solarsystem class?
+ *
+ * Or should we just create a separate class for all test functions, and then
+ * call on these in mainSS, using the positions and velocities for each object,
+ * when certain forces from other objects are acting, when calling on
+ * classes GravitationalForce, Euler, and Verlet?
  */
 
-  double rN = sqrt(pow(pos(0, N-1),2) + pow(pos(1, N-1),2) + pow(pos(2, N-1),2));
-  double v2N = vel(0,N-1)*vel(0,N-1) + vel(1,N-1)*vel(1,N-1) + vel(1,N-1)*vel(1,N-1);
 //  cout << "--> UnitTesting -->" << endl;
-  cout << "Verlet works!" << endl;
 }
 
-  mat VelocityVerlet::InitialPosition(mat pos){
+  arma::mat VelocityVerlet::InitialPosition(arma::mat pos){
     double x0 = pos(0,0) = 9.528047055398201E-01;       // AU
     double y0 = pos(1,0) = 3.053612869840809E-01;       // AU
     double z0 = pos(2,0) = -9.272902073041313E-05;      // AU
-    cout <<"Initial position in x, y, z direction:" << endl;
-    cout << x0 << " " << y0 <<" " << z0 << endl;
+    std::cout <<"Initial position in x, y, z direction:" << std::endl;
+    std::cout << x0 << " " << y0 <<" " << z0 << std::endl;
     return pos;
   }
 
-  mat VelocityVerlet::InitialVelocity(mat vel){
+  arma::mat VelocityVerlet::InitialVelocity(arma::mat vel){
   // JPL values are AU/day so multiply with 365.25
     double vx0 = vel(0,0) = -5.428888690270241E-03*365.25;      // AU/yr
     double vy0 = vel(1,0) = 1.636353485946535E-02*365.25;       // AU/yr
     double vz0 = vel(2,0) = -4.491683144318728E-07*365.25;      // AU/yr
-    cout <<"Initial velocity in x, y, z direction:" << endl;
-    cout << vx0 << " " << vy0 <<" " << vz0 << endl;
+    std::cout <<"Initial velocity in x, y, z direction:" << std::endl;
+    std::cout << vx0 << " " << vy0 <<" " << vz0 << std::endl;
     return vel;
   }

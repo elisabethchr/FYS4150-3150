@@ -1,6 +1,6 @@
 #include "solarsystem.h"
 #include <iostream>
-using namespace std;
+//using namespace std;
 
 SolarSystem::SolarSystem() :
     m_kineticEnergy(0),
@@ -8,7 +8,7 @@ SolarSystem::SolarSystem() :
 {
 }
 
-CelestialObject& SolarSystem::createCelestialObject(mat position, mat velocity, double mass) {
+CelestialObject& SolarSystem::createCelestialObject(vec3 position, vec3 velocity, double mass) {
     m_objects.push_back( CelestialObject(position, velocity, mass) );  //.push_bak = add element at end of vector
     return m_objects.back(); // Return reference to the newest added celstial body
 }

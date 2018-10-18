@@ -3,17 +3,17 @@
 #include <string>
 #include <armadillo>
 
-#include "readfile.hpp"
-using namespace std;
-using namespace arma;
+//#include "readfile.hpp"
+//using namespace std;
+//using namespace arma;
 
 //int main()
-mat Readfile(string file)
+arma::mat Readfile(std::string file)
 {
-  mat A = zeros(10,3);    // Matrix with the x,y,z elements of each planet in the Solar System
+  arma::mat A = arma::zeros(10,3);    // Matrix with the x,y,z elements of each planet in the Solar System
   //A.print();
-  ifstream infile;
-  string name; vec vx = zeros(10); vec vy=zeros(10); vec vz = zeros(10);
+  std::ifstream infile;
+  std::string name; arma::vec vx = arma::zeros(10); arma::vec vy=arma::zeros(10); arma::vec vz = arma::zeros(10);
   infile.open(file);//("Initialposition.txt");
 
   while (!infile.fail())

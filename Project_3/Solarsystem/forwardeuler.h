@@ -11,27 +11,27 @@
 #include <iomanip>
 #include <math.h>
 
-using namespace std;
-using namespace arma;
+//using namespace std;
+//using namespace arma;
 
 class ForwardEuler
 {
 
 //private:
 public:
-    mat vel, pos, acc;
+    arma::mat vel, pos, acc;
 //    double x0, y0, z0;
 //    double vx0, vy0, vz0;
 
 //public:
     double m_dt;
     void Euler(double dt);
-    mat Integrate(int dim, int N, string filename, double eps, double dt);
+    arma::mat Integrate(int dim, int N, std::string filename, double eps, double dt);
 //    double step (double stepsPrYear){return 1.0/stepsPrYear;}
-    mat InitialPosition(mat pos);
-    mat InitialVelocity(mat vel);
-    mat getPos(mat pos){return pos;}
-    mat getVel(mat vel){return vel;}
-    mat getAcc(mat acc){return acc;}
+    arma::mat InitialPosition(arma::mat pos);
+    arma::mat InitialVelocity(arma::mat vel);
+    arma::mat getPos(arma::mat pos){return pos;}
+    arma::mat getVel(arma::mat vel){return vel;}
+    arma::mat getAcc(arma::mat acc){return acc;}
 };
 #endif // FORWARDEULER_H

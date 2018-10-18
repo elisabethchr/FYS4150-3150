@@ -5,6 +5,7 @@
 #include <iomanip>
 //#include "Method_Earth_sun.hpp"
 #include "forwardeuler.h"
+#include "velocityverlet.h"
 //#include "initialize.h"
 #include "Readfile.h"
 //#include "readfile.hpp"
@@ -17,6 +18,24 @@ int main(int nArgs, char **arguments)
   int numTimesteps = 366*2; // 2 years minimum
   if (nArgs >= 2) numTimesteps = atoi(arguments[1])*366; // n years
   int dim = 3;
+
+  double stepsPrYear = 365.25;
+  double epsilon = 1e-5;
+  double dt = 0.001;
+  mat pos_euler;
+  mat pos_verlet;
+
+//  SolarSystem solarsystem;
+// CelestialObject &sun = solarsystem.createCelestialBody( vec3(0,0,0), vec3(0,0,0), 1.0 );
+  string obj = "sun";
+  ForwardEuler integrate_euler;     //need object of the class (integrate_euler) to use the member function Integrate within the class
+  pos_euler = integrate_euler.Integrate(numTimesteps, dim, obj, epsilon, dt);
+  cout  << "pos_euler: " << endl;
+  cout << pos_euler << endl;
+
+  VelocityVerlet integrate_verlet;  //need object of the class (integrate_verlet) to use the member function Integrate within the class
+  pos_verlet = integrate_verlet.Integrate(numTimesteps, dim, obj, epsilon, dt);
+
 
   // Call initial values: 0-CoM, 1-Mercery,2-venus,3-Earth,4-mars,5-jupiter,6-saturn,
   // 7-uranus,8-neptune,9-pluto. Both position and velocity is listed: x, y, z direction
