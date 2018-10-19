@@ -1,4 +1,4 @@
-//definitions for functions within class ForwardEuler
+﻿//definitions for functions within class ForwardEuler
 #include <iostream>
 #include <armadillo>
 #include <cmath>
@@ -10,28 +10,54 @@
 #include "forwardeuler.h"
 //#include "initialize.h"
 #include "gravitationalforce.h"
+#include "celestialobject.h"
+#include "solarsystem.h"
 
 void ForwardEuler::Euler(double dt)// :m_dt(dt)
 {
     m_dt = dt;
 }
 
-arma::mat ForwardEuler::Integrate(vec3 position, vec3 velocity, double mass){ // int N, int dim, std::string obj){
+arma::mat ForwardEuler::Integrate(SolarSystem &input_system){//vec3 position, vec3 velocity, double mass){ // int N, int dim, std::string obj){
   /*
   Compute the position of the planet using forward Euler method.
   */
 //  double dt = 0.001;
+  std::cout << "euler?" << std::endl;
+  solar = &input_system;
+  int  NumberOfObjects = solar->numberOfObjects();
+
   int N = 367;
   int dim = 3;
   double h = 1.0/((double) 365.25); //1.0/((double) 365.25);
   arma::mat vel = arma::zeros(dim, N);
   arma::mat pos = arma::zeros(dim, N);
-  arma::mat acc = arma::zeros(dim, N);
 
-//  Initialize initialize;
 
-  vel(0, 0) = velocity(0); vel(1, 0) = velocity(1); vel(2, 0) = velocity(2);
-  pos(0, 0) = position(0); pos(1, 0) = position(1); pos(2, 0) = position(2);
+//  Obtain the initial velocities and positions for planets in m_objects;
+  //vec3 posit1, veloc1;
+  //vec3 posit2, veloc2;
+    std::cout << "before extracting bodies" << std::endl;
+    std::vector<CelestialObject> &bodies = solar->objects();
+    arma::mat posit = arma::zeros(dim+1, bodies.size());
+    arma::mat veloc = arma::zeros(dim, bodies.size());
+    arma::vec mass = arma::zeros(bodies.size());
+    for (int i=0; i<bodies.size(); i++){
+      CelestialObject &obj = bodies[i];
+        std::cout << "i = " << i << std::endl;
+      for (int j=0; j < dim; j++){
+          veloc(j, i) = obj.velocity(j);
+        }
+      for(int j=0; j < dim+1; j++){
+          posit(j, i) = obj.position(j);
+          }
+    mass(i) = obj.mass;
+    }
+    std::cout << "mass" << mass << std::endl;
+
+
+  vel(0, 0) = veloc(0); vel(1, 0) = veloc(1); vel(2, 0) = veloc(2);
+  pos(0, 0) = posit(0); pos(1, 0) = posit(1); pos(2, 0) = posit(2);
 
 //  vel = InitialVelocity(vel);
 //  pos = InitialPosition(pos);
@@ -42,19 +68,22 @@ arma::mat ForwardEuler::Integrate(vec3 position, vec3 velocity, double mass){ //
   start = std::clock();  // start timing
 
   // Integrating loop:
-  for (int i=0; i<N-1; i++){
-    double r = sqrt(pow(pos(0, i),2) + pow(pos(1, i),2) + pow(pos(2, i),2));
-    double v2 = vel(0,i)*vel(0,i) + vel(1,i)*vel(1,i) + vel(1,i)*vel(1,i);
-    t(i+1) = t(i) + h;
-    for (int j=0; j<dim; j++){
-
-      acc(j,i) = GravitationalForce::Force(pos(j,i), r);
-      vel(j, i+1) = vel(j, i) + h*acc(j,i);
-      pos(j, i+1) = pos(j, i) + h*vel(j,i);
-
+//for(int k=0; k < objects.size(); k++){
+//    CelestialObject &obj1 = objects[k];
+//    for(int l=k+1; l < objects.size(); l++){
+//        CelestialObject &obj2 = objects[l];
+  for(int k=0; k<NumberOfObjects; k++){
+  std::cout << "printing?" << std::endl;
+    for(int i=0; i<N-1; i++){
+        for (int j=0; j<dim; j++){
+            vec3 acc = bodies[k].force/bodies[k].mass;
+            vel(j, i+1) = vel(j, i) + h*acc(j);
+            pos(j, i+1) = pos(j, i) + h*vel(j,i);
+        }
     }
-
-  }
+    std::cout << "pos for planet " << k << std::endl;
+    pos.print();
+}
   finish = std::clock();   // end timing
   double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );
   std::cout << std::setprecision(10) << "Time used: " << time_used << " s at " << N/365 <<" yr" << std::endl;
@@ -64,6 +93,9 @@ arma::mat ForwardEuler::Integrate(vec3 position, vec3 velocity, double mass){ //
 //  getVel(vel);
   return pos;
 }
+
+
+
 /*
   mat ForwardEuler::getPos(mat pos){
     return pos;

@@ -8,20 +8,25 @@ INCLUDEPATH += \
         C:\Users\Elisabeth\Documents\FYS3150\Project_3
 
 SOURCES += \
-    forwardeuler.cpp \
-    gravitationalforce.cpp \
     celestialobject.cpp \
-    velocityverlet.cpp \
     solarsystem.cpp \
-    MainSS.cpp
+    MainSS.cpp \
+    vec3.cpp \
+    forwardeuler.cpp \
+    readfile_test.cpp
+    velocityverlet.cpp
+    gravitationalforce.cpp
 
 HEADERS += \
-    forwardeuler.h\
     initialize.h \
-    gravitationalforce.h \
     celestialobject.h \
-    velocityverlet.h \
     solarsystem.h \
+    forwardeuler.h \
+    vec3.h \
+    readfile_test.h
     Readfile.h
+
+    velocityverlet.h
     WriteToFile.hpp
+    gravitationalforce.h
     EnergyTest.hpp

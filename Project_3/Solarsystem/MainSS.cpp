@@ -5,7 +5,7 @@
 #include <iomanip>
 //#include "Method_Earth_sun.hpp"
 #include "forwardeuler.h"
-#include "velocityverlet.h"
+//#include "velocityverlet.h"
 #include "celestialobject.h"
 #include "solarsystem.h"
 #include "vec3.h"
@@ -29,24 +29,32 @@ int main(int nArgs, char **arguments)
   arma::mat pos_euler;
   arma::mat pos_verlet;
 
+
+  SolarSystem sol("Initialposition.txt", "Initialvelocity.txt");
+  ForwardEuler SolvePositions;
+  SolvePositions.Integrate(sol);
+
 //  SolarSystem solarsystem;
 // CelestialObject &sun = solarsystem.createCelestialBody( vec3(0,0,0), vec3(0,0,0), 1.0 );
-  std::string obj = "sun";
-  ForwardEuler integrate_euler;     //need object of the class (integrate_euler) to use the member function Integrate within the class
+//  std::string obj = "sun";
+//  ForwardEuler integrate_euler;     //need object of the class (integrate_euler) to use the member function Integrate within the class
+  /*
   pos_euler = integrate_euler.Integrate(numTimesteps, dim, obj, epsilon, dt);
   std::cout  << "pos_euler: " << std::endl;
   std::cout << pos_euler << std::endl;
 
   VelocityVerlet integrate_verlet;  //need object of the class (integrate_verlet) to use the member function Integrate within the class
   pos_verlet = integrate_verlet.Integrate(numTimesteps, dim, obj, epsilon, dt);
-
+*/
 
   // Call initial values: 0-CoM, 1-Mercery,2-venus,3-Earth,4-mars,5-jupiter,6-saturn,
   // 7-uranus,8-neptune,9-pluto. Both position and velocity is listed: x, y, z direction
+
+/* -----------> this is put in the solarsystem.cpp file
   arma::mat pos0 = Readfile("Initialposition.txt");     // AU
   arma::mat vel0 = Readfile("Initialvelocity.txt");     // AU/yr
-  pos0.print("initpos");
-  vel0.print("initvel");
+  //pos0.print("initpos");
+  //vel0.print("initvel");
   arma::vec pos0_CoM = arma::zeros(3); arma::vec vel0_CoM = arma::zeros(3);           // Center of mass
   arma::vec pos0_Mercery = arma::zeros(3); arma::vec vel0_Mercery = arma::zeros(3);
   arma::vec pos0_Venus = arma::zeros(3); arma::vec vel0_Venus = arma::zeros(3);
@@ -70,9 +78,11 @@ int main(int nArgs, char **arguments)
     pos0_Neptune(j) = pos0(8,j); vel0_Neptune(j) = vel0(8,j);
     pos0_Pluto(j) = pos0(9,j); vel0_Pluto(j) = vel0(9,j);
     }
+<------------- */
 
-    SolarSystem SolarSystem;
 
+//    ForwardEuler integrate_euler;
+/*
     CelestialObject &sun = SolarSystem.createCelestialObject( vec3(0,0,0), vec3(0,0,0), 1.0 );
 
     // We don't need to store the reference, but just call the function without a left hand side
@@ -85,9 +95,10 @@ int main(int nArgs, char **arguments)
 
     CelestialObject &earth = SolarSystem.createCelestialObject(vec3 (pos0_Earth(0), pos0_Earth(1), pos0_Earth(2)), vec3 (vel0_Earth(0), vel0_Earth(1), vel0_Earth(2)), 3e-6 );
 
-    // To get a list (a reference, not copy) of all the bodies in the solar system, we use the .bodies() function
-    std::vector<CelestialObject> &objects = SolarSystem.objects();
-
+    // To get a list (a reference, not copy) of all the bodies in the solar system, we use the .objects() function
+*/
+//    ForwardEuler integrate_euler;
+//   integrate_euler.Integrate(&sun, &earth);
 
   //SolarSystem = SolarSystem;
   //ForwardEuler Euler;
