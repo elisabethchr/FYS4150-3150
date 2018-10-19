@@ -10,7 +10,7 @@
 class SolarSystem
 {
 public:
-    SolarSystem(std::string filename1, std::string filename2);
+    SolarSystem(std::string filename1, std::string filename2, std::string filename3);
     CelestialObject &createCelestialObject(vec3 position, vec3 velocity, double mass);
     void calculateForcesAndEnergy();
     int numberOfObjects() const;

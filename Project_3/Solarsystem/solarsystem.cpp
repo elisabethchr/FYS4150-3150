@@ -10,13 +10,14 @@
 #include <iomanip>
 //using namespace std;
 
-SolarSystem::SolarSystem(std::string positionfile, std::string velocityfile) :
+SolarSystem::SolarSystem(std::string positionfile, std::string velocityfile, std::string massfile) :
     m_kineticEnergy(0),
     m_potentialEnergy(0)
 {
   Readfile_test readfile;
-  arma::mat pos0 = readfile.Readfile_(positionfile);     // AU
-  arma::mat vel0 = readfile.Readfile_(velocityfile);     // AU/yr
+  arma::mat pos0 = readfile.Readfile_(positionfile);    // AU
+  arma::mat vel0 = readfile.Readfile_(velocityfile);
+  arma::mat masses = readfile.Readfile_(massfile);   // AU/yr
   //pos0.print("initpos");
   //vel0.print("initvel");
   //vec3::vec3(){return zeros()} ---> see vec3.cpp
@@ -30,12 +31,12 @@ SolarSystem::SolarSystem(std::string positionfile, std::string velocityfile) :
   vec3 pos0_Uranus; vec3 vel0_Uranus;
   vec3 pos0_Neptune; vec3 vel0_Neptune;
   vec3 pos0_Pluto; vec3 vel0_Pluto;
-  double mass_CoM, mass_Mercury, mass_Venus, mass_Earth, mass_Mars;
-  double mass_Jupiter, mass_Saturn, mass_Uranus, mass_Neptune, mass_Pluto;
+  std::cout << "before masses are assigned to each object" << std::endl;
+  double mass_CoM = masses(0, 0), mass_Mercury = masses(1, 0), mass_Venus = masses(2, 0), mass_Earth = masses(3, 0), mass_Mars = masses(4, 0);
+  double mass_Jupiter = masses(5, 0), mass_Saturn= masses(6, 0), mass_Uranus= masses(7, 0), mass_Neptune= masses(8, 0), mass_Pluto= masses(9, 0);
 
-  for (int j=0; j<4;j++){
+  for (int j=0; j<3;j++){
   std::cout << "j = " << j << std::endl;
-    if(j<3){
     pos0_CoM(j) = pos0(0,j); vel0_CoM(j) = vel0(0,j);
     pos0_Mercury(j) = pos0(1,j); vel0_Mercury(j)=vel0(1,j);
     pos0_Venus(j) = pos0(2,j); vel0_Venus(j) = vel0(2,j);
@@ -47,12 +48,8 @@ SolarSystem::SolarSystem(std::string positionfile, std::string velocityfile) :
     pos0_Neptune(j) = pos0(8,j); vel0_Neptune(j) = vel0(8,j);
     pos0_Pluto(j) = pos0(9,j); vel0_Pluto(j) = vel0(9,j);
     }
-    else if(j==3){
-    mass_CoM = pos0(0, j); mass_Mercury = pos0(1, j); mass_Venus = pos0(2, j); mass_Earth = pos0(3, j); mass_Mars = pos0(4, j);
-    mass_Jupiter = pos0(5, j); mass_Saturn = pos0(6, j); mass_Uranus = pos0(7, j); mass_Neptune = pos0(8, j); mass_Pluto = pos0(9, j);
-    }
+
     std::cout << "mass sun" << mass_CoM << std::endl;
-    }
     std::cout << "Constructor SolarSystem okay" << std::endl;
     CelestialObject &sun = createCelestialObject(pos0_CoM, vel0_CoM, mass_CoM);
 //    CelestialObject &mercury = createCelestialObject(pos0_Mercury, vel0_Mercury, mass_Mercury);

@@ -39,12 +39,13 @@ arma::mat ForwardEuler::Integrate(SolarSystem &input_system){//vec3 position, ve
   //vec3 posit2, veloc2;
     std::cout << "before extracting bodies" << std::endl;
     std::vector<CelestialObject> &bodies = solar->objects();
-    arma::mat posit = arma::zeros(dim+1, bodies.size());
+    //    arma::mat posit = arma::zeros(dim+1, bodies.size());
+    arma::mat posit = arma::zeros(dim, bodies.size());
     arma::mat veloc = arma::zeros(dim, bodies.size());
     arma::vec mass = arma::zeros(bodies.size());
     for (int i=0; i<bodies.size(); i++){
       CelestialObject &obj = bodies[i];
-        std::cout << "i = " << i << std::endl;
+//        std::cout << "i = " << i << std::endl;
       for (int j=0; j < dim; j++){
           veloc(j, i) = obj.velocity(j);
         }
@@ -53,9 +54,9 @@ arma::mat ForwardEuler::Integrate(SolarSystem &input_system){//vec3 position, ve
           }
     mass(i) = obj.mass;
     }
-    std::cout << "mass" << mass << std::endl;
+ //   std::cout << "mass" << mass << std::endl;
 
-
+//initializing to position and velociy matrices used in forward euler
   vel(0, 0) = veloc(0); vel(1, 0) = veloc(1); vel(2, 0) = veloc(2);
   pos(0, 0) = posit(0); pos(1, 0) = posit(1); pos(2, 0) = posit(2);
 
@@ -82,7 +83,7 @@ arma::mat ForwardEuler::Integrate(SolarSystem &input_system){//vec3 position, ve
         }
     }
     std::cout << "pos for planet " << k << std::endl;
-    pos.print();
+//    pos.print();
 }
   finish = std::clock();   // end timing
   double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );

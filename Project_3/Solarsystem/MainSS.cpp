@@ -26,11 +26,11 @@ int main(int nArgs, char **arguments)
   double stepsPrYear = 365.25;
   double epsilon = 1e-5;
   double dt = 0.001;
-  arma::mat pos_euler;
-  arma::mat pos_verlet;
+//  arma::mat pos_euler;
+//  arma::mat pos_verlet;
 
 
-  SolarSystem sol("Initialposition.txt", "Initialvelocity.txt");
+  SolarSystem sol("Initialposition.txt", "Initialvelocity.txt", "masses.txt");
   ForwardEuler SolvePositions;
   SolvePositions.Integrate(sol);
 
