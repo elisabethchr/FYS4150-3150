@@ -27,5 +27,6 @@ arma::mat Readfile_test::Readfile_(std::string file)
     infile.close();
   A.print("output from Readfile_test");
   std::cout << "Readfile_test okay" << std::endl;
+  std::cout << "size of matrix n_cols:" << sizeof(A.n_cols);
   return A;
 }
