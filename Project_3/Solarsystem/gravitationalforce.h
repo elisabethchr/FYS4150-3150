@@ -21,8 +21,10 @@ class GravitationalForce
     double G;
 
 public:
-    double Force(double pos, double r);
-    double Gravity(CelestialObject *a, CelestialObject *b);
+    GravitationalForce *gravForce = nullptr;
+
+    //double Force(double pos, double r);
+    static vec3 Gravity(CelestialObject &a, CelestialObject &b);
 };
 
 #endif // GRAVITATIONALFORCE_H
