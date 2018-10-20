@@ -56,49 +56,72 @@ arma::mat VelocityVerlet::Integrate(SolarSystem &input_system){//vec3 position, 
     start = std::clock();
 
     /*
- * Velocity Verlet calculation
- */
+    * Velocity Verlet calculation
+    */
 
-    for(int k=0; k<NumberOfObjects; k++){
-        //initializing to position and velociy matrices used in forward euler
-        vel(0, 0) = vel_init(0, k); vel(1, 0) = vel_init(1, k); vel(2, 0) = vel_init(2, k);
-        pos(0, 0) = pos_init(0, k); pos(1, 0) = pos_init(1, k); pos(2, 0) = pos_init(2, k);
-        arma::mat acc = arma::zeros(dim, N); arma::mat acc_next = arma::zeros(dim, N);
-        arma::mat v = arma::zeros(dim, N);
-        //std::vector<vec3>acc;
-        for(int i=0; i<N-1; i++){
-            bodies[k].resetForce();
-            solar->calculateForcesAndEnergy();
-            //vec3 a = bodies[k].force/bodies[k].mass;
-            std::cout <<"before " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
-            for (int j=0; j<dim; j++){
-              acc(j,i) = bodies[k].force(j)/bodies[k].mass;
-              bodies[k].position(j) += h*bodies[k].velocity(j) + (h*h*0.5)*acc(j,i);
 
-              acc_next(j,i+1) = bodies[k].force(j)/bodies[k].mass;
-              v(j,i+1) += 0.5*h*(acc_next(j,i+1) + acc(j,i));
-            }
-            std::cout<<"after " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
+    for(int i=0; i<N-1; i++){
+      //initializing to position and velociy matrices used in forward euler
 
-            //bodies[k].position += h*bodies[k].velocity + (h*h*0.5)*acc;
-            //acc_next = bodies[k].force/bodies[k].mass;
-            //bodies[k].velocity += (0.5*h)*(acc_next + acc);
+      //arma::mat acc = arma::zeros(dim, N); arma::mat acc_next = arma::zeros(dim, N);
+      //arma::mat v = arma::zeros(dim, N);
+      //std::vector<vec3>acc;
 
-            for (int j=0; j<dim; j++){
-
-                pos(j, i+1) = bodies[k].position(j);
-
-            }
+      solar->calculateForcesAndEnergy();
+      for(int k=0; k<NumberOfObjects; k++){
+        if (i==0){
+          vel(0, 0) = vel_init(0, k); vel(1, 0) = vel_init(1, k); vel(2, 0) = vel_init(2, k);
+          pos(0, 0) = pos_init(0, k); pos(1, 0) = pos_init(1, k); pos(2, 0) = pos_init(2, k);
         }
 
-        //write positions of each object/planet k to file
-        std::string filename = "verlet_pos";
-        std::string arg = std::to_string(k);
-        filename.append(arg);
-        filename.append(".txt");
-        WriteToFile write;
-        write.WritetoFile(filename, pos, N);
-        std::cout << "size of pos for k = " << k << " is " << sizeof(pos) << std::endl;
+        std::cout <<"before plantet" <<k <<" " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
+        vec3 acc = bodies[k].force/bodies[k].mass;
+        bodies[k].position += h*bodies[k].velocity + (h*h*0.5)*acc;
+        bodies[k].resetForce();
+      }
+
+      solar->calculateForcesAndEnergy();
+      for (int k=0; k<NumberOfObjects; k++){
+        vec3 acc_next = bodies[k].force/bodies[k].mass;
+        std::cout <<"after  plantet" <<k <<" " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
+        bodies[k].velocity += (0.5*h)*(acc_next + acc);
+        bodies[k].resetForce();
+
+      }
+
+        //std::cout <<"before " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
+        //std::cout <<"before " << bodies[k].velocity << "  "<< bodies[k].position << std::endl;
+        /*
+        for (int j=0; j<dim; j++){
+          acc(j,i) = bodies[k].force(j)/bodies[k].mass;
+          bodies[k].position(j) += h*bodies[k].velocity(j) + (h*h*0.5)*acc(j,i);
+
+          acc_next(j,i+1) = bodies[k].force(j)/bodies[k].mass;
+          bodies[k].velocity(j) += 0.5*h*(acc_next(j,i+1) + acc(j,i));
+        }
+
+        vec3 acc = bodies[k].force/bodies[k].mass;
+        bodies[k].position += h*bodies[k].velocity + (h*h*0.5)*acc;
+        vec3 acc_next = bodies[k].force/bodies[k].mass;
+        //std::cout<<"after  " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
+        //std::cout <<"after " << bodies[k].velocity << "  "<< bodies[k].position << std::endl;
+        bodies[k].velocity += (0.5*h)*(acc_next + acc);
+
+        for (int j=0; j<dim; j++){
+          pos(j, i+1) = bodies[k].position(j);
+
+        }
+
+
+      //write positions of each object/planet k to file
+      std::string filename = "verlet_pos";
+      std::string arg = std::to_string(k);
+      filename.append(arg);
+      filename.append(".txt");
+      WriteToFile write;
+      write.WritetoFile(filename, pos, N);
+      std::cout << "size of pos for k = " << k << " is " << sizeof(pos) << std::endl;
+      */
     }
 
     //stop timing
