@@ -59,71 +59,65 @@ arma::mat VelocityVerlet::Integrate(SolarSystem &input_system){//vec3 position, 
     * Velocity Verlet calculation
     */
 
-
+    //arma::cube pos = arma::zeros(dim, N, NumberOfObjects);
     for(int i=0; i<N-1; i++){
-      //initializing to position and velociy matrices used in forward euler
+        arma::mat acc = arma::zeros(dim, NumberOfObjects);
+        solar->calculateForcesAndEnergy();
 
-      //arma::mat acc = arma::zeros(dim, N); arma::mat acc_next = arma::zeros(dim, N);
-      //arma::mat v = arma::zeros(dim, N);
-      //std::vector<vec3>acc;
+        std::cout <<"before planet1"<<" " << bodies[1].position << std::endl;
+        for(int k=0; k<NumberOfObjects; k++){
 
-      solar->calculateForcesAndEnergy();
-      for(int k=0; k<NumberOfObjects; k++){
-        if (i==0){
-          vel(0, 0) = vel_init(0, k); vel(1, 0) = vel_init(1, k); vel(2, 0) = vel_init(2, k);
-          pos(0, 0) = pos_init(0, k); pos(1, 0) = pos_init(1, k); pos(2, 0) = pos_init(2, k);
+            //write to file here
+            std::string filename = "Verlet_pos";
+            std::string arg = std::to_string(k);
+            filename.append(arg);
+            filename.append(".txt");
+            WriteToFile write;
+            write.WritetoFile(filename, bodies[k].position(0), bodies[k].position(1), bodies[k].position(2));
+
+            for (int j=0; j<dim; j++){
+                acc(j,k) = bodies[k].force(j)/bodies[k].mass;
+                bodies[k].position(j) += h*bodies[k].velocity(j) + (h*h*0.5)*acc(j,k);
+            }
+
+            bodies[k].resetForce();
         }
 
-        std::cout <<"before plantet" <<k <<" " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
-        vec3 acc = bodies[k].force/bodies[k].mass;
-        bodies[k].position += h*bodies[k].velocity + (h*h*0.5)*acc;
-        bodies[k].resetForce();
-      }
+        solar->calculateForcesAndEnergy(); // Update gravitational force
+        for (int k=0; k<NumberOfObjects; k++){
+            vec3 acc_next = bodies[k].force/bodies[k].mass;
 
-      solar->calculateForcesAndEnergy();
-      for (int k=0; k<NumberOfObjects; k++){
-        vec3 acc_next = bodies[k].force/bodies[k].mass;
-        std::cout <<"after  plantet" <<k <<" " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
-        bodies[k].velocity += (0.5*h)*(acc_next + acc);
-        bodies[k].resetForce();
+            for (int j=0; j<dim; j++){
+                bodies[k].velocity(j) += (0.5*h)*(acc_next(j) + acc(j,k));
+            }
+            bodies[k].resetForce();
 
-      }
-
-        //std::cout <<"before " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
-        //std::cout <<"before " << bodies[k].velocity << "  "<< bodies[k].position << std::endl;
-        /*
-        for (int j=0; j<dim; j++){
-          acc(j,i) = bodies[k].force(j)/bodies[k].mass;
-          bodies[k].position(j) += h*bodies[k].velocity(j) + (h*h*0.5)*acc(j,i);
-
-          acc_next(j,i+1) = bodies[k].force(j)/bodies[k].mass;
-          bodies[k].velocity(j) += 0.5*h*(acc_next(j,i+1) + acc(j,i));
+            // Put positions into a 3d matrix for further
+            //for (int j=0; j<3; j++){
+            //  pos(j,i,k) = bodies[k].position(j);
+            //}
         }
+        std::cout <<"after  planet1" <<" " << bodies[1].position << std::endl;
 
-        vec3 acc = bodies[k].force/bodies[k].mass;
-        bodies[k].position += h*bodies[k].velocity + (h*h*0.5)*acc;
-        vec3 acc_next = bodies[k].force/bodies[k].mass;
-        //std::cout<<"after  " << bodies[k].force/bodies[k].mass << "  "<< bodies[k].position << std::endl;
-        //std::cout <<"after " << bodies[k].velocity << "  "<< bodies[k].position << std::endl;
-        bodies[k].velocity += (0.5*h)*(acc_next + acc);
-
-        for (int j=0; j<dim; j++){
-          pos(j, i+1) = bodies[k].position(j);
-
-        }
-
-
-      //write positions of each object/planet k to file
-      std::string filename = "verlet_pos";
-      std::string arg = std::to_string(k);
-      filename.append(arg);
-      filename.append(".txt");
-      WriteToFile write;
-      write.WritetoFile(filename, pos, N);
-      std::cout << "size of pos for k = " << k << " is " << sizeof(pos) << std::endl;
-      */
     }
+    /*
+    // Write to file
 
+    for (int k=0; k<NumberOfObjects; k++){
+      std::cout << "Plantet"<< k << std::endl;
+
+      string filename = "Verlet_pos";
+      string arg = to_string(k);
+      filename.append(arg);
+      filename.append(".txt")
+
+      for (int i=0; i<N; i++){
+        std::cout << pos(0,i,k) << "  "<< pos(1,i,k)<< "  "<< pos(1,i,k) << std::endl;
+      }
+
+
+    }
+    */
     //stop timing
     finish = std::clock();   // end timing
     double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );

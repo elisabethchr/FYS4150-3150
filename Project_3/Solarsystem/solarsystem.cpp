@@ -1,14 +1,16 @@
-#include "solarsystem.h"
-#include "gravitationalforce.h"
-//#include "Readfile.h"
-#include "readfile_test.h"
-#include "celestialobject.h"
 #include <iostream>
 #include <armadillo>
 #include <cmath>
 #include <fstream>
 #include <iomanip>
-//using namespace std;
+#include "include_headers.h"
+/*
+#include "solarsystem.h"
+#include "gravitationalforce.h"
+//#include "Readfile.h"
+#include "readfile_test.h"
+#include "celestialobject.h"
+*/
 
 SolarSystem::SolarSystem(std::string positionfile, std::string velocityfile, std::string massfile) :
     m_kineticEnergy(0),
@@ -48,10 +50,10 @@ SolarSystem::SolarSystem(std::string positionfile, std::string velocityfile, std
     CelestialObject &sun = createCelestialObject(pos0_CoM, vel0_CoM, mass_CoM);
     CelestialObject &earth = createCelestialObject(pos0_Earth, vel0_Earth, mass_Earth);
     CelestialObject &jupiter = createCelestialObject(pos0_Jupiter, vel0_Jupiter, mass_Jupiter);
-
     /*
     CelestialObject &mercury = createCelestialObject(pos0_Mercury, vel0_Mercury, mass_Mercury);
     CelestialObject &venus = createCelestialObject(pos0_Venus, vel0_Venus, mass_Venus);
+    CelestialObject &earth = createCelestialObject(pos0_Earth, vel0_Earth, mass_Earth);
     CelestialObject &mars = createCelestialObject(pos0_Mars, vel0_Mars, mass_Mars);
     CelestialObject &jupiter = createCelestialObject(pos0_Jupiter, vel0_Jupiter, mass_Jupiter);
     CelestialObject &saturn = createCelestialObject(pos0_Saturn, vel0_Saturn, mass_Saturn);
@@ -60,6 +62,7 @@ SolarSystem::SolarSystem(std::string positionfile, std::string velocityfile, std
     CelestialObject &pluto = createCelestialObject(pos0_Pluto, vel0_Pluto, mass_Pluto);
 */
 }
+
 CelestialObject &SolarSystem::createCelestialObject(vec3 position, vec3 velocity, double mass){
     m_objects.push_back( CelestialObject(position, velocity, mass) );  //.push_bak = add element at end of vector
     return m_objects.back(); // Return reference to the newest added celstial body
@@ -73,16 +76,10 @@ void SolarSystem::calculateForcesAndEnergy()
     m_kineticEnergy = 0;
     m_potentialEnergy = 0;
     m_angularMomentum.zeros();
-    /*
-    for(CelestialObject &object : m_objects) {
-        // Reset forces on all bodies
-        object.force.zeros();
-    }
-*/
 
 
     /*
- * Calculating the gravitationalForce:
+ * Calculating the gravitational forces as well as potential and kinetic energies:
  */
     for(int i=0; i<numberOfObjects(); i++){
         CelestialObject &object1 = m_objects[i];
@@ -90,23 +87,21 @@ void SolarSystem::calculateForcesAndEnergy()
             CelestialObject &object2 = m_objects[j];
             vec3 dRvec = object2.position - object1.position;
             double dr = dRvec.length();
-            //            std::cout << "object1_pos = " << object1.position << std::endl;
-            //            std::cout << "object2_pos = " << object2.position << std::endl;
-            std::cout << dr << " " << dRvec << std::endl;
+            //std::cout << "object1_pos = " << object1.position << std::endl;
+            //std::cout << "object2_pos = " << object2.position << std::endl;
+            //std::cout << dr << " " << dRvec << std::endl;
             vec3 F1 = G*object2.mass*object1.mass*dRvec/(dr*dr*dr);
             vec3 F2 = (-1)*F1;
             object1.addForce(F1);
             object2.addForce(F2);
             //            std::cout << "F1 = " << F1 << std::endl;
+            m_kineticEnergy += 0.5*object1.mass*object1.velocity.lengthSquared();
+            m_potentialEnergy += (-G*object1.mass*object2.mass)/dr;
         }
 
-        m_kineticEnergy += 0.5*object1.mass*object1.velocity.lengthSquared();
+        //        m_kineticEnergy += 0.5*object1.mass*object1.velocity.lengthSquared();
+        //        m_potentialEnergy += (-G*object1.mass*object2.mass)
     }
-
-}
-
-void addNewPlanet(CelestialObject ){
-
 }
 
 int SolarSystem::numberOfObjects() const
@@ -133,3 +128,10 @@ std::vector<CelestialObject> &SolarSystem::objects()
 {
     return m_objects;
 }
+
+
+/*
+void addNewPlanet(CelestialObject ){
+
+}
+*/

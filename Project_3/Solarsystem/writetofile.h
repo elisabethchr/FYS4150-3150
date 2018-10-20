@@ -13,7 +13,8 @@
 class WriteToFile
 {
 public:
-    int WritetoFile(std::string filename, arma::mat A);
+    int WritetoFile(std::string filename, double x, double y, double z);
+    int WritetoFileMatrix(std::string filename, arma::mat A, int N);
 };
 
 #endif // WRITETOFILE_H
