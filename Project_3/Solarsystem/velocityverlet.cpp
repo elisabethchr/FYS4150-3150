@@ -17,7 +17,7 @@ void VelocityVerlet::Verlet(double dt)// :m_dt(dt)
     m_dt = dt;
 }
 
-arma::mat VelocityVerlet::Integrate(SolarSystem &input_system){//vec3 position, vec3 velocity, double mass){ // int N, int dim, std::string obj){
+arma::mat VelocityVerlet::Integrate(SolarSystem &input_system){
     /*
  * Compute the position of the planet using forward Euler method.
  */
@@ -27,7 +27,7 @@ arma::mat VelocityVerlet::Integrate(SolarSystem &input_system){//vec3 position, 
     int N = 367*2;
     int dim = 3;
     double h = 1.0/((double) 365.25); //1.0/((double) 365.25);
-    double hh2 = h*h*0.5;
+    double hh2 = h*h*0.5; double epsilon = 1e-5;
     arma::mat vel = arma::zeros(dim, N);
     arma::mat pos = arma::zeros(dim, N);
 
@@ -61,66 +61,90 @@ arma::mat VelocityVerlet::Integrate(SolarSystem &input_system){//vec3 position, 
 
     //arma::cube pos = arma::zeros(dim, N, NumberOfObjects);
     for(int i=0; i<N-1; i++){
-        arma::mat acc = arma::zeros(dim, NumberOfObjects);
-        solar->calculateForcesAndEnergy();
+      arma::mat acc = arma::zeros(dim, NumberOfObjects);
+      solar->calculateForcesAndEnergy();
 
-        std::cout <<"before planet1"<<" " << bodies[1].position << std::endl;
-        for(int k=0; k<NumberOfObjects; k++){
-
-            //write to file here
-            std::string filename = "Verlet_pos";
-            std::string arg = std::to_string(k);
-            filename.append(arg);
-            filename.append(".txt");
-            WriteToFile write;
-            write.WritetoFile(filename, bodies[k].position(0), bodies[k].position(1), bodies[k].position(2));
-
-            for (int j=0; j<dim; j++){
-                acc(j,k) = bodies[k].force(j)/bodies[k].mass;
-                bodies[k].position(j) += h*bodies[k].velocity(j) + (h*h*0.5)*acc(j,k);
-            }
-
-            bodies[k].resetForce();
+      //std::cout <<"before planet"<<" " << bodies[1].position << std::endl;
+      for(int k=0; k<NumberOfObjects; k++){
+        if (i==0){
+          //initializing to position and velociy matrices
+          vel(0, 0) = vel_init(0, k); vel(1, 0) = vel_init(1, k); vel(2, 0) = vel_init(2, k);
+          pos(0, 0) = pos_init(0, k); pos(1, 0) = pos_init(1, k); pos(2, 0) = pos_init(2, k);
         }
 
-        solar->calculateForcesAndEnergy(); // Update gravitational force
-        for (int k=0; k<NumberOfObjects; k++){
-            vec3 acc_next = bodies[k].force/bodies[k].mass;
-
-            for (int j=0; j<dim; j++){
-                bodies[k].velocity(j) += (0.5*h)*(acc_next(j) + acc(j,k));
-            }
-            bodies[k].resetForce();
-
-            // Put positions into a 3d matrix for further
-            //for (int j=0; j<3; j++){
-            //  pos(j,i,k) = bodies[k].position(j);
-            //}
+        for (int j=0; j<dim; j++){
+          acc(j,k) = bodies[k].force(j)/bodies[k].mass;
+          bodies[k].position(j) += h*bodies[k].velocity(j) + (h*h*0.5)*acc(j,k);
         }
-        std::cout <<"after  planet1" <<" " << bodies[1].position << std::endl;
+        //write to file here
+        std::string filename = "Verlet_pos";
+        std::string arg = std::to_string(k);
+        std::string arg2 = std::to_string(h);
+        std::string arg3 = std::to_string((int) round(N/365.25));
+        filename.append(arg);
+        filename.append("_dt");
+        filename.append(arg2);
+        filename.append("_yr");
+        filename.append(arg3);
+        filename.append(".txt");
+        WriteToFile write;
+        //write.WritetoFile(filename, bodies[k].position(0), bodies[k].position(1), bodies[k].position(2));
 
-    }
-    /*
-    // Write to file
-
-    for (int k=0; k<NumberOfObjects; k++){
-      std::cout << "Plantet"<< k << std::endl;
-
-      string filename = "Verlet_pos";
-      string arg = to_string(k);
-      filename.append(arg);
-      filename.append(".txt")
-
-      for (int i=0; i<N; i++){
-        std::cout << pos(0,i,k) << "  "<< pos(1,i,k)<< "  "<< pos(1,i,k) << std::endl;
+        bodies[k].resetForce();
       }
 
+      solar->calculateForcesAndEnergy(); // Update gravitational force
+      for (int k=0; k<NumberOfObjects; k++){
+        vec3 acc_next = bodies[k].force/bodies[k].mass;
+        for (int j=0; j<dim; j++){
+          bodies[k].velocity(j) += (0.5*h)*(acc_next(j) + acc(j,k));
+        }
 
+        // Energy testing and angular momentum:
+        double E0, E_end, dl;
+        vec3 l0, l_end;
+        if (i == 0){
+          E0 = solar->totalEnergy();
+          //l0 = solar->angularMomentum();
+          //std::cout << "Energy at start time = " << E0 << std::endl;
+          //l0.print("angular Momentum start:");
+        }
+        if (i == N-2){
+          E_end = solar->totalEnergy();
+          //l_end = solar->angularMomentum();
+          //std::cout << "Energy at end time = " << E_end << std::endl;
+          //l_end.print("angular momentum end:");
+          if (fabs(E0 - E_end)< epsilon){
+            std::cout <<"Energy is conserved for planet" << k <<", dE = " << E0 - E_end << std::endl;
+          }
+          else{
+            std::cout <<"Energy is not conserved for planet"<< k <<", dE = " << E0 - E_end<< std::endl;
+          }
+        }
+        // angularMomentum
+        l0 = solar->angularMomentum();
+        l_end = solar->angularMomentum();
+        //l0.print("angular Momentum start:");
+        //l_end.print("angular Momentum end:");
+        dl = (l_end - l0).length();
+        //std::cout <<dl << std::endl;
+
+        if (fabs(dl) <= epsilon){
+          std::cout <<"Angular momentum is conserved for planet" << k << std::endl;
+        }
+        else{
+          std::cout <<"Angular momentum is not conserved for planet" << k << std::endl;
+          std:: cout << "Difference in angular momentum: dl = " << dl << std::endl;
+        }
+
+        bodies[k].resetForce();
+      }
+      //std::cout <<"after  planet" <<" " << bodies[2].position << std::endl;
     }
-    */
+
     //stop timing
     finish = std::clock();   // end timing
     double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );
-    //  std::cout << std::setprecision(10) << "Time used: " << time_used << " s at " << N/365 <<" yr" << std::endl;
+    std::cout << std::setprecision(10) << "Time used: " << time_used << " s at " << N/365.25 <<" yr" << std::endl;
     return pos;
 }
