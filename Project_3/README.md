@@ -7,13 +7,11 @@ This project aims at the use of the forward Euler method and the velocity Verlet
 #### Files included:
 ##### Earth_Sun_system (non-object oriented)
   
-  - celestialobject.h/cpp
+
   - Earth_Sun.cpp (main file)
-  - gravitationalforce.h/cpp
-  - initialize.h/cpp
-  - solarsystem.h/cpp
-  - velocityerlet.h/cpp
   - Method_Earth_Sun.hpp
+  - UnitTestin.hpp
+  - WriteToFile.hpp
   - PlotEarthSun.py
 
 ##### Solarsystem (object oriented)
@@ -24,4 +22,7 @@ This project aims at the use of the forward Euler method and the velocity Verlet
   - solarsystem.h/cpp
   - velocityverlet.h/cpp
   - writetofile.h/cpp
+  - vec3.h/cpp
   - GetPlanetValues.py
+  - PlotSolarSystem.py
+  - PlotEnergies.py
