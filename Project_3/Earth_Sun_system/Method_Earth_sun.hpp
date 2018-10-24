@@ -1,4 +1,4 @@
-// Header file - not object oriented code:
+// Header file:
 
 #include <iostream>
 #include <armadillo>
@@ -7,11 +7,11 @@
 #include <iomanip>
 #include <math.h>
 #include "WriteToFile.hpp"
-//#include "UnitTesting.hpp"
+#include "UnitTesting.hpp"
 
 using namespace std;
 using namespace arma;
-//ofstream ofile;     // create file for output
+
 
 mat Initialvelocity(mat vel, int N){
   // JPL values are AU/day so multiply with 365.25
@@ -53,7 +53,6 @@ double force (double pos, double r){
 }
 
 
-
 void Euler(int N, int dim, string filename, double eps, double dt){
   /*
   Compute the position of the planet using forward Euler method.
@@ -84,7 +83,6 @@ void Euler(int N, int dim, string filename, double eps, double dt){
 
     }
 
-    //cout << pos(0,i) << " " << pos(1,i) << " " << pos(2,i) << endl;
   }
   finish = clock();   // end timing
   double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );
@@ -92,15 +90,15 @@ void Euler(int N, int dim, string filename, double eps, double dt){
 
   cout << t(N-1) << " " << h <<" " << N << endl;
   // Final position and velocity
-  double rN = sqrt(pow(pos(0, N-1),2) + pow(pos(1, N-1),2) + pow(pos(2, N-1),2));
-  double v2N = vel(0,N-1)*vel(0,N-1) + vel(1,N-1)*vel(1,N-1) + vel(1,N-1)*vel(1,N-1);
+  double rN = sqrt(pow(pos(0, 366),2) + pow(pos(1, 366),2) + pow(pos(2, 366),2));
+  double v2N = vel(0,366)*vel(0,366) + vel(1,366)*vel(1,366) + vel(1,366)*vel(1,366);
   cout << "--> UnitTesting -->" << endl;
-/*
-  PositionTest(pos(0,0), pos(0,366), eps*100);
+
+  PositionTest(pos(0,0), pos(0,366), eps*1000);
   EnergyTest(v20, v2N, r0, rN, eps);
   AngularMomentumTest(pos, vel, eps, N);
   WriteFile(filename, N, dim, pos);
-*/
+
 }
 
 
@@ -139,7 +137,7 @@ void VelocityVerlet(int N, int dim, string filename, double eps, double dt){
       vel(j, i+1) = vel(j,i) + h_half*(acc(j,i+1) + acc(j,i));
 
     }
-    //cout << pos(0,i+1) << " " << pos(1,i+1) << " " << pos(2, i+1) << endl;
+
   }
   finish = clock();   // end timing
   double time_used = (double)(finish - start)/(CLOCKS_PER_SEC );
@@ -147,23 +145,23 @@ void VelocityVerlet(int N, int dim, string filename, double eps, double dt){
 
   cout << t(N-1) << " " << r2<< endl;
 
-  double rN = sqrt(pow(pos(0, N-1),2) + pow(pos(1, N-1),2) + pow(pos(2, N-1),2));
-  double v2N = vel(0,N-1)*vel(0,N-1) + vel(1,N-1)*vel(1,N-1) + vel(1,N-1)*vel(1,N-1);
+  double rN = sqrt(pow(pos(0, 366),2) + pow(pos(1, 366),2) + pow(pos(2, 366),2));
+  double v2N = vel(0,366)*vel(0,366) + vel(1,366)*vel(1,366) + vel(1,366)*vel(1,366);
   cout << "--> UnitTesting -->" << endl;
-/*
-  PositionTest(pos(0,0), pos(0,366), eps*100);
+
+  PositionTest(pos(0,0), pos(0,366), eps*1000);
   EnergyTest(v20, v2N, r0, rN, eps);
   AngularMomentumTest(pos, vel, eps, N);
-  //pos.save("testpos.txt", arma_ascii);
+
   WriteFile(filename, N, dim, pos);
-*/
 }
 
 
 double Gforce(double pos, double r, double beta){
   double pi = acos(-1);
   double GtimesMsun = 4*pi*pi; //AU^3/yr^2
-  double F = -GtimesMsun * pos/((double) pow(r, beta));
+  double beta1 = beta-1; double beta2 = beta+1;
+  double F = -GtimesMsun * pow(pos, beta1)/((double) pow(r, beta2));
 
   return F;
 }
@@ -200,7 +198,7 @@ void EscapeVelocity(int N, int dim, string filename){
         vel(j, i+1) = vel(j,i) + h_half*(acc(j,i+1) + acc(j,i));
 
       }
-      //cout << pos(0,i+1) << " " << pos(1,i+1) << " " << pos(2, i+1) << endl;
+
     }
     string filename = "Vescape";
     string arg = to_string(vy0);
@@ -213,7 +211,7 @@ void EscapeVelocity(int N, int dim, string filename){
 
 
 void AlterativeForce(int N, int dim){
-  double h = step(365.25);//1.0/(365.25);
+  double h = step(365.25);
   double hh_half = h*h/2.0;
   double h_half = h/2.0;
   mat acc = zeros(dim, N); mat vel = zeros(dim, N); mat pos = zeros(dim, N);
@@ -226,21 +224,22 @@ void AlterativeForce(int N, int dim){
 
   for (int b=0; b<5; b++){
     for (int i=0; i<N-1; i++){
-      double r = sqrt(pos(0, i)*pos(0, i) + pos(1, i)*pos(1, i) + pos(2, i)*pos(2, i));
+      double r = sqrt(pos(0, i)*pos(0, i) + pos(1, i)*pos(1, i));
       acc(0,i) = acc(1,i) = acc(2,i) = 0.0;
-      for (int j=0; j<dim; j++){
+      for (int j=0; j<dim-1; j++){
         acc(j,i) = Gforce(pos(j,i), r, beta(b));
         pos(j, i+1) = pos(j, i) + h*vel(j, i) + hh_half*acc(j,i);
 
       }
-      double rnew = sqrt(pow(pos(0,i+1),2) + pow(pos(1,i+1),2) + pow(pos(2,i+1),2));
-      for (int j=0; j<dim; j++){
+
+      double rnew = sqrt(pos(0,i+1)*pos(0,i+1) + pos(1,i+1)*pos(1,i+1));
+      for (int j=0; j<dim-1; j++){
         acc(j,i+1) = Gforce(pos(j,i+1), rnew, beta(b));
         vel(j, i+1) = vel(j,i) + h_half*(acc(j,i+1) + acc(j,i));
-
       }
-      //cout << pos(0,i+1) << " " << pos(1,i+1) << " " << pos(2, i+1) << endl;
+
     }
+    
     string filename = "Beta";
     string arg = to_string(b);
     filename.append(arg);
