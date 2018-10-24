@@ -25,4 +25,4 @@ This project aims at the use of the forward Euler method and the velocity Verlet
   - vec3.h/cpp
   - GetPlanetValues.py
   - PlotSolarSystem.py
-  - PlotEnergies.py
+  - PlotEnergy.py
