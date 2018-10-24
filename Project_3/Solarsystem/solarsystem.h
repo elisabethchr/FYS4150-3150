@@ -2,7 +2,6 @@
 #define SOLARSYSTEM_H
 
 #include "celestialobject.h"
-#include "gravitationalforce.h"
 #include <vector>
 #include <string>
 #include <fstream>
@@ -13,6 +12,8 @@ public:
     SolarSystem(std::string filename1, std::string filename2, std::string filename3);
     CelestialObject &createCelestialObject(vec3 position, vec3 velocity, double mass);
     void calculateForcesAndEnergy();
+    void calculateForcesAndEnergy(double beta);
+    void relativisticForcesAndEnergy();
     int numberOfObjects() const;
 
     double totalEnergy() const;
