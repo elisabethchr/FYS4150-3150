@@ -24,4 +24,3 @@ void CelestialObject::resetForce()
 {
     force.zeros();
 }
-
