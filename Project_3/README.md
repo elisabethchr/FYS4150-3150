@@ -23,3 +23,4 @@ This project aims at the use of the forward Euler method and the velocity Verlet
   - solarsystem.h/cpp
   - velocityverlet.h/cpp
   - writetofile.h/cpp
+  - GetPlanetValues.py
