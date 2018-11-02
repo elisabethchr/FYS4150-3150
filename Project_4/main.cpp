@@ -16,7 +16,7 @@ Compute the 2D ising model.
 using namespace std;
 using namespace arma;
 
-ofstream ofile;
+
 int main(int argc, char* argv[])
 {
   string filename;
@@ -29,25 +29,27 @@ int main(int argc, char* argv[])
   else{
     filename = argv[1];
   }
-  n_spin = 2; MCs = 100; Temp0 = 1.2; Temp_final = 1.7; Temp_step = 0.05;
-
+  n_spin = 2; MCs = 100; Temp0 = 1.2; Temp_final = 1.75; Temp_step = 0.05;
+  /*
+  ofstream ofile;
   string output = filename;
   string arg = to_string(n_spin);
   output.append(arg);
   output.append(".txt");
   ofile.open(output);
+  */
 
   Metropolis metroplis;
   System sys;
   for (double T = Temp0; T<=Temp_final; T+=Temp_step){
     vec ExpValues = zeros(5);
-
-    metroplis.Metropolis(n_spin, MCs, T, ExpValues);
-
-    sys.writefile(n_spin, MCs, T, ExpValues);
+    //cout << T << endl;
+    metroplis.metropolis(n_spin, MCs, T, ExpValues, filename);
+    //ExpValues.print("ExpValues");
+    //sys.writefile(n_spin, MCs, T, ExpValues, output);
 
   }
-  ofile.close();
+  //ofile.close();
 
   return 0;
 }
