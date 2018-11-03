@@ -21,6 +21,7 @@ void Metropolis::metropolis(int n_spin, int MCs, double Temp, vec ExpValues, str
   System sys;
   double Energy = sys.Energy();
   double MagneticMoment = sys.MagneticMoment();
+  int counter = 0;
   sys.initialize(n_spin, Temp);//, Energy, MagneticMoment);
   mat spin_matrix = sys.Lattice();//zeros(n_spin, n_spin);
   vec w = zeros(pow(2, n_spin*n_spin)+1);
@@ -49,6 +50,7 @@ void Metropolis::metropolis(int n_spin, int MCs, double Temp, vec ExpValues, str
           spin_matrix(iy,ix) *= -1;      // Flip one spin
           MagneticMoment += (double) 2*spin_matrix(iy,ix);
           Energy += (double) deltaE;
+          counter += 1;
           //cout << " E= "<< Energy << " RNG= "<<RandomNumberGenerator(gen) << " w = " << w(deltaE+8)<< endl;
           //cout << " cycle: "<< cycle<<" dE = " << deltaE << endl;
         }
@@ -61,7 +63,15 @@ void Metropolis::metropolis(int n_spin, int MCs, double Temp, vec ExpValues, str
     ExpValues(3) += MagneticMoment*MagneticMoment;
     ExpValues(4) += fabs(MagneticMoment);
     //ExpValues.print(" ");
-    sys.writefile(n_spin, MCs, Temp, ExpValues, filename);
+    
+    // write only every 100 value
+    if ((cycle%100==0) && (cycle != 0)){
+      cout << "i = " << cycle << endl;
+      sys.writefile(n_spin, MCs, Temp, ExpValues, filename);
+    }
+
+
   }
+  cout << "Number of accepted runs: " << counter << endl;
   //ofile.close();
 }
