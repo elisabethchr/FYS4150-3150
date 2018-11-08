@@ -25,7 +25,10 @@ void Metropolis::metropolis(int n_spin, int MCs, double Temp, vec ExpValues, int
     double MagneticMoment = sys.MagneticMoment();
     mat spin_matrix = sys.Lattice();
     vec w = zeros(pow(2, n_spin*n_spin)+1);
-
+    int steps;
+    if(MCs<=100){
+        steps = 1;}
+    else{steps = 0.001*MCs;}
     //initialize energy difference matrix
     for (int dE=-8; dE<=8;dE+=4){
         w(dE+8) = exp(-dE/Temp);
@@ -64,10 +67,10 @@ void Metropolis::metropolis(int n_spin, int MCs, double Temp, vec ExpValues, int
         ExpValues(4) += fabs(MagneticMoment);
         //ExpValues.print(" ");
         //        sys.writefile(n_spin, MCs, Temp, ExpValues, cycle, nTemp, filename);
-        //if ((cycle%100==0) && (cycle != 0)){
+        if ((cycle%steps==0) && (cycle != 0)){
             //cout << "i = " << cycle << endl;
             sys.writefile(n_spin, MCs, Temp, ExpValues, cycle, nTemp, filename);
-        //  }
+          }
 
     }
     cout << "Number of accepted runs: " << counter << endl;

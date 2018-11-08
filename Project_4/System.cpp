@@ -15,10 +15,10 @@ using namespace arma;
 
 // output file
 ofstream ofile;
-void System::writefile(int n_spin, int MCs, double Temp, vec expValues, int Mcs, int nTemp, string filename)
+void System::writefile(int n_spin, int MCs, double Temp, vec expValues, int cycle, int nTemp, string filename)
 {
 //expValues = (E, E^2, M, M^2, |M|)
-    double norm = 1.0/((double) MCs);
+    double norm = 1.0/((double) cycle);
     double averageE = expValues(0)*norm;
     double averageE2 = expValues(1)*norm;
     double averageM = expValues(2)*norm;
@@ -32,15 +32,16 @@ void System::writefile(int n_spin, int MCs, double Temp, vec expValues, int Mcs,
 
     string output = filename;
     string arg = to_string(n_spin);
-    string NumberOfCycles = to_string(MCs);
+    string NumberOfMCs = to_string(MCs);
     string NumberOfTemps = to_string(nTemp);
     output.append("_nSpin_");
     output.append(arg);
     output.append("_nTemp_");
     output.append(NumberOfTemps);
     output.append("_MC_");
-    output.append(NumberOfCycles);
+    output.append(NumberOfMCs);
     output.append("_.txt");
+    //ofile.open(output, ios::trunc);
     ofile.open(output, ios::app | ios::out);
 
     ofile << setiosflags(ios::showpoint | ios::uppercase);
@@ -51,7 +52,7 @@ void System::writefile(int n_spin, int MCs, double Temp, vec expValues, int Mcs,
     ofile << setw(20) << setprecision(8) << averageM/n_spin/n_spin; //print average magnetic moment
     ofile << setw(20) << setprecision(8) << chi/Temp;   //print susceptibility (magnetic variance)
     ofile << setw(20) << setprecision(8) << averageMabs/n_spin/n_spin;  //print absolute value of magnetic moment
-    ofile << setw(20) << setprecision(8) << Mcs << "\n";    //print Monte Carlo cycle
+    ofile << setw(20) << setprecision(8) << cycle << "\n";    //print Monte Carlo cycle
     ofile.close();
 }
 

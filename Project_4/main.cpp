@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     //  }
 
     filename = "Ising";
-    n_spin = 2; MCs = 1000; Temp0 = 1.; Temp_final = 1.; Temp_step = 0.05;
+    n_spin = 2; MCs = 1000000; Temp0 = 1.; Temp_final = 1.; Temp_step = 0.05;
     int nTemp = (Temp_final-Temp0)/Temp_step;
 
     Metropolis metrop;

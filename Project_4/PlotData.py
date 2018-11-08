@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys, glob
 #from analytic import Printing
-
+"""
 # Load and plot data
 filenames = []
 for args in range(1,len(sys.argv)):
@@ -42,13 +42,14 @@ plt.show()
 
 
 
-def PlotMCEnergy(MCs, energy, i):
+def PlotMCEnergy(MCs, energy, i, numMc):
     plt.plot(MCs, energy, 'r-')
     plt.xlabel('Monte Carlo cycles')
     plt.ylabel(r'Energy$\cdot$ J')
     plt.legend('T=%3f' %i, loc='best', fontsize=12)
-    plt.title(r'$\langle E \rangle$, T = %3f' %i)
+    plt.title(r'$\langle E \rangle$, T = %3f, MC = %d' %i %numMc)
     plt.grid('on')
+    plt.savefig()
     plt.show()
 
 def PlotCvTemp(Temp, Cv):
@@ -69,8 +70,8 @@ def PlotMagTemp(Temp, Mag):
     plt.grid('on')
     plt.show()
 
-filename = 'Ising_nSpin_2_nTemp_1_MC_1000000_.txt'
-#data = np.loadtxt('Ising_nSpin_2_nTemp_1_MC_1000000_.txt')
+#filename = 'Ising_nSpin_2_nTemp_1_MC_1000000_.txt'
+filename = sys.argv[1]
 data = np.genfromtxt(filename)
 NumberOfValues = data.shape[0]
 NumberOfMc = int(filename.split('_')[6])
@@ -88,7 +89,7 @@ Susceptibility = data[:, 4]
 abs_MagneticMoment = data[:, 5]
 
 for l in xrange(1, NumberOfTemp+1):
-    PlotMCEnergy(Mcs[NumberOfMc*(l-1):NumberOfMc*(l)], Energy[NumberOfMc*(l-1):NumberOfMc*(l)], Temps[(NumberOfMc+1)*(l-1)])
+    PlotMCEnergy(Mcs[NumberOfMc*(l-1):NumberOfMc*(l)], Energy[NumberOfMc*(l-1):NumberOfMc*(l)], Temps[(NumberOfMc+1)*(l-1)], NumberOfMc)
 
 #for every total number of Monte Carlo cycles for each temperature, extract the final Cv value and insert in Cv1
 Cv = np.zeros(NumberOfTemp)
@@ -104,4 +105,3 @@ print Cv
 PlotMagTemp(Temperatures, M)
 
 #
-"""
