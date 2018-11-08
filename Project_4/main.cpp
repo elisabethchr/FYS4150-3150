@@ -1,7 +1,3 @@
-/*
-Compute the 2D ising model.
-*/
-
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -16,40 +12,36 @@ Compute the 2D ising model.
 using namespace std;
 using namespace arma;
 
-
 int main(int argc, char* argv[])
 {
-  string filename;
-  int n_spin, MCs;      // number of spins and number of Monte carlo simulations
-  double Temp0, Temp_final, Temp_step;
-  if (argc <= 1){
-    cout << "Bad usage: type filename for output" << endl;
-    exit(1);
-  }
-  else{
-    filename = argv[1];
-  }
-  n_spin = 2; MCs = 100; Temp0 = 1.2; Temp_final = 1.75; Temp_step = 0.05;
-  /*
-  ofstream ofile;
-  string output = filename;
-  string arg = to_string(n_spin);
-  output.append(arg);
-  output.append(".txt");
-  ofile.open(output);
-  */
+    string filename;
+    int n_spin, MCs;      // number of spins and number of Monte carlo simulations+
+    double Temp0, Temp_final, Temp_step;
 
-  Metropolis metroplis;
-  System sys;
-  for (double T = Temp0; T<=Temp_final; T+=Temp_step){
+    //  if (argc <= 1){
+    //    cout << "Bad usage: type filename for output" << endl;
+    //    exit(1);
+    //  }
+    //  else{
+    //    filename = argv[1];
+    //  }
+
+    filename = "Ising";
+    n_spin = 2; MCs = 1000; Temp0 = 1.; Temp_final = 1.; Temp_step = 0.05;
+    int nTemp = (Temp_final-Temp0)/Temp_step;
+
+    Metropolis metrop;
+    System sys;
+
+    //    for (double T = Temp0; T<=Temp_final; T+=Temp_step){
     vec ExpValues = zeros(5);
-    //cout << T << endl;
-    metroplis.metropolis(n_spin, MCs, T, ExpValues, filename);
-    //ExpValues.print("ExpValues");
-    //sys.writefile(n_spin, MCs, T, ExpValues, output);
+    //metrop.metropolis(n_spin, MCs, T, ExpValues, nTemp, filename);
+    metrop.metropolis(n_spin, MCs, 1, ExpValues, 1, filename);
 
-  }
-  //ofile.close();
+    //sys.writefile(n_spin, MCs, T, ExpValues, filename);
+    //    }
 
-  return 0;
+    //ofile.close();
+    return 0;
 }
+
