@@ -1,1 +1,1 @@
-This folder contains all data (.txt) files for each task.
+This folder contains data (.txt) files for each task.
