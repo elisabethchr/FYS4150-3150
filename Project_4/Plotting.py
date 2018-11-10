@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
 import sys, glob
-from analytic import Printing
+from analytic import Printing, Z
 
 # Load and plot data
 filenames = []
@@ -55,7 +56,7 @@ def PlotB1Temp(file, Temp):
 def PlotC1Temp(file, Temp):
     data = LoadC(file)
     outname = file.split('.')[0]
-    #outname = outname.split('/')[1]
+    outname = outname.split('/')[1]
     names = ['Monte Carlo cycles', 'temperature', 'Energy', 'Heat capacity', 'Magnetic Moment', \
                 'Suseptibility', 'Abs. Magnetization', 'Numer of accepted runs']
     units = [' ', 'K', 'J', 'J/K', ' ', ' ', ' ', ' ']
@@ -68,7 +69,7 @@ def PlotC1Temp(file, Temp):
             plt.xlabel('Monte Carlo cycles')
             plt.ylabel(r'%s [%s]'%(name, units[ind]))
             plt.tight_layout()
-            #plt.savefig('Plots/Plotsc/%s_%s.png'%(name,outname))
+            plt.savefig('Plots/Plotsc/%s_%s.png'%(name,outname))
 
     plt.figure('Number of accepted runs against temperature')
     plt.plot(data[:,0], data[:,-1], 'g.')
@@ -77,15 +78,88 @@ def PlotC1Temp(file, Temp):
     plt.tight_layout()
     #plt.savefig('Plots/Plotsc/NumAcc_ofT_%s.png'%(outname))
 
+def PlotAcc(files):
+    T1order = []; T1random = []; T24order = []; T24random = []
+
+    plt.figure('NumAcc of MC')
+    for file in files:
+        if file.split('_')[3] == 'mcT1order':
+            T1order.append(file)
+            mc = file.split('_')[-1]
+            mc = mc.split('.')[0]
+            data = np.loadtxt(file)
+            if len(T1order) == 1:
+                plt.semilogx(mc, data[-1,-1]/float(mc), 'xb', label='T=1, spin up')
+                #plt.plot(mc, data1[-1,-1], '.b', label='T=1, spin up')
+            else:
+                plt.semilogx(mc, data[-1,-1]/float(mc), 'xb', label='_nolegend_')
+                #plt.plot(mc, data1[-1,-1], '.b', label='_nolegend_')
+        if file.split('_')[3] == 'mcT24order':
+            T24order.append(file)
+            mc = file.split('_')[-1]
+            mc = mc.split('.')[0]
+            data = np.loadtxt(file)
+            if len(T24order) == 1:
+                #plt.plot(mc, data1[-1,-1], '.r', label='T=2.4, spin up')
+                plt.semilogx(mc, data[-1,-1]/float(mc), '.r', label='T=1, spin up')
+            else:
+                #plt.plot(mc, data1[-1,-1], '.r', label='_nolegend_')
+                plt.semilogx(mc, data[-1,-1]/float(mc), '.r', label='_nolegend_')
+
+        if file.split('_')[3] == 'mcT1random':
+            T1random.append(file)
+            mc = file.split('_')[-1]
+            mc = mc.split('.')[0]
+            data = np.loadtxt(file)
+            if len(T1random) == 1:
+                #plt.plot(mc, data1[-1,-1], '.g', label='T=1, spin up')
+                plt.semilogx(mc, data[-1,-1]/float(mc), 'xg', label='T=1, spin random')
+            else:
+                #plt.plot(mc, data1[-1,-1], '.g', label='_nolegend_')
+                plt.semilogx(mc, data[-1,-1]/float(mc), 'xg', label='_nolegend_')
+
+        if file.split('_')[3] == 'mcT24random':
+            T24random.append(file)
+            mc = file.split('_')[-1]
+            mc = mc.split('.')[0]
+            data = np.loadtxt(file)
+            if len(T24random) == 1:
+                #plt.plot(mc, data1[-1,-1], '.k', label='T=1, spin up')
+                plt.semilogx(mc, data[-1,-1]/float(mc), '.k', label='T=2.4, spin random')
+            else:
+                #plt.plot(mc, data1[-1,-1], '.k')
+                plt.semilogx(mc, data[-1,-1]/float(mc), '.k')
+
+
+    plt.xlabel('Monte Carlo cycles', size=14)
+    plt.ylabel('# accepted runs/ MC cycles', size=14)
+    plt.legend(loc=1, ncol=1, fontsize=12)
+    plt.savefig('Plots/Plotsc/NumAccRuns_ofMC.png')
+
 def PlotAccTemp(file):
-    data = LoadC(file)
+    data = np.loadtxt(file)
+    T = data[:,1]
+
+    Index = []; N_accepted = []; Temp = []
+    for i in range(1, len(T)):
+        if T[i] != T[i-1] or i == len(T)-1:
+            Index.append(i-1)
+            N_accepted.append(data[i-1,-1])
+            Temp.append(T[i-1])
+        else:
+            pass
+
+    Index = np.asarray(Index); N_accepted = np.asarray(N_accepted); Temp = np.asarray(Temp)
+    slope, intercept, r_value, p_value, std_err = stats.linregress(Temp, N_accepted)
 
     plt.figure('Number of accepted runs against temperature')
-    plt.plot(data[:,1], data[:,-1], '-b')
-    plt.xlabel(r'Temperature, $T$ [K]')
-    plt.ylabel(r'Number of accepted runs')
+    plt.plot(Temp, N_accepted, 'xk', label='Data points')
+    plt.plot(Temp, slope*Temp + intercept, '-b', label=r'Fit, $\sigma=%.3f$'%std_err)
+    plt.xlabel(r'Temperature, $T$ [K]', size=14)
+    plt.ylabel(r'Number of accepted runs', size=14)
+    plt.legend(loc=4, fontsize=12)
     plt.tight_layout()
-    #plt.savefig('Plots/Plotsc/NumAcc_ofT_%s.png'%(outname))
+    plt.savefig('Plots/Plotsc/NumAcc_ofT.png')
 
 
 def Probability(filename):
@@ -99,31 +173,44 @@ def Probability(filename):
     Mabs = data[:,6]
     Accepted_runs = data[:,7]
 
-    Tname = np.mean(T)*10
-    varE = Cv*T**2
+    name = filename.split('_')[2]
+    Tname = name.split('T')[1]
+    varE = Cv*T**2/(Z())        # ???
 
     plt.figure('Probability histogram')
     plt.hist(E, bins=50, facecolor='r')
-    plt.plot()
     plt.title('Probability distribution of Energy at T=%g'%(T[-1]))
-    plt.xlabel('Energies')
-    plt.ylabel('Probability')
+    plt.xlabel('Energies, [J]', size=14)
+    plt.ylabel('Probability', size=14)
     plt.grid('on')
-    #plt.savefig('Plots/Plotsd/Probability_%s.png'%Tname)
+    plt.savefig('Plots/Plotsd/Probability_%s.png'%Tname)
 
+    plt.figure('variance')
+    plt.plot(MC, varE, '-b')
+    plt.xlabel('Monte Carlo cycles', size=14)
+    plt.ylabel(r'Variance, $\sigma_{E}^{2}$ [J$^2$]', size=14)
+    plt.grid('on')
+    plt.tight_layout()
+    plt.savefig('Plots/Plotsd/VarianceE_T%s.png'%Tname)
+
+filesAcc = glob.glob('Txt_files/cAcc/*.txt')
 
 # Ex P4b:
 #PlotB1Temp('Txt_files/4b2x2_10000000.txt', 1.0)
 
 # Ex P4c:
-#PlotC1Temp('Txt_files/test4c_T1_1000000.txt', 1.0)
-#PlotC1Temp('Txt_files/test4c_randomT1_1000000.txt', 1.0)
-#PlotC1Temp('Txt_files/p4c20x20_T24_1000000.txt', 2.4)
+#PlotC1Temp('Txt_files/p4c20x20_orderT1_1000000.txt', 1)
+#PlotC1Temp('Txt_files/p4c20x20_randomT1_1000000.txt', 1)
+#PlotC1Temp('Txt_files/p4c20x20_orderT24_1000000.txt', 2.4)
 #PlotC1Temp('Txt_files/p4c20x20_randomT24_1000000.txt', 2.4)
-#PlotC1Temp('p4c20x20_randomT24_1000000.txt', 1)
 
-PlotAccTemp('p4c20x20_diffT_100000.txt')
+#PlotAcc(filesAcc)
+#PlotAccTemp('Txt_files/cAcc/p4c20x20_diffT_100000.txt')
+
 # Ex P4d:
+#Probability('Txt_files/p4c20x20_orderT1_1000000.txt')
+#Probability('Txt_files/p4c20x20_orderT24_1000000.txt')
 
-#Probability('Txt_files/test4c_T24_1000000.txt')
+
+
 plt.show()
