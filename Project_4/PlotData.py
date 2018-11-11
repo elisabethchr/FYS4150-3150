@@ -1,107 +1,84 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, glob
-#from analytic import Printing
-"""
-# Load and plot data
-filenames = []
-for args in range(1,len(sys.argv)):
-    filenames.append(sys.argv[args])
-
-filenames = glob.glob('*.txt')
-#print
-#print filenames
-filename1 = 'Ising_nSpin_2_nTemp_1_MC_1000000_.txt'
-tot = int(filename1.split('_')[6])
-def LoadAndPlot(file):
-    data = np.loadtxt(file)
-    print data[:, 0]
-    #print a
-
-    T = data[:,0]
-    E = data[:,1]
-    Cv = data[:,2]
-    M = data[:,3]
-    chi = data[:,4]
-    Mabs = data[:,5]
-
-
-    plt.figure('Suesptibilty')
-    plt.plot(E)
-
-
-#LoadAndPlot(filenames[0])
-#LoadAndPlot(filenames[1])
-#LoadAndPlot(filenames[2])
-#LoadAndPlot(filenames[3])
-#LoadAndPlot(filenames[4])
-#LoadAndPlot(filenames[5])
-LoadAndPlot(filename1)
-plt.show()
-"""
-
-
-
-def PlotMCEnergy(MCs, energy, i, numMc):
-    plt.plot(MCs, energy, 'r-')
-    plt.xlabel('Monte Carlo cycles')
-    plt.ylabel(r'Energy$\cdot$ J')
-    plt.legend('T=%3f' %i, loc='best', fontsize=12)
-    plt.title(r'$\langle E \rangle$, T = %3f, MC = %d' %i %numMc)
-    plt.grid('on')
-    plt.savefig()
-    plt.show()
-
-def PlotCvTemp(Temp, Cv):
-    plt.plot(Temp, Cv, 'b-')
-    plt.xlabel('Temperatures')
-    plt.ylabel(r'Heat Capacity $C_V$')
-    plt.title(r'Heat capacity $C_V$')
-    #plt.axis('equal')
-    plt.grid('on')
-    plt.show()
-
-def PlotMagTemp(Temp, Mag):
-    plt.plot(Temp, Mag, 'b-')
-    plt.xlabel('Temperatures')
-    plt.ylabel(r'Magnetic Moment $\langle M \rangle$')
-    plt.title(r'Magnetic Moment $\langle M \rangle$')
-    #plt.axis('equal')
-    plt.grid('on')
-    plt.show()
+import PlotFunctions as Plot
 
 #filename = 'Ising_nSpin_2_nTemp_1_MC_1000000_.txt'
 filename = sys.argv[1]
+#filename = glob.glob('*.txt')
 data = np.genfromtxt(filename)
 NumberOfValues = data.shape[0]
-NumberOfMc = int(filename.split('_')[6])
+NumberOfSpins = int(filename.split('_')[2])
 NumberOfTemp = int(filename.split('_')[4])
+NumberOfMC = int(int(filename.split('_')[6]))#/10)
+
+if NumberOfMC >= 10000:
+    steps = int(0.0001*NumberOfMC)
+    NumberOfSteps = 9000
+else:
+    steps = 1
+    NumberOfSteps = NumberOfMC
+
+NumberOfMc = int(NumberOfMC/steps)
+#NumberOfMc = int(NumberOfValues/steps)
+#print NumberOfMc
+#NumberOfTemp = int(filename.split('_')[4])
 
 
-Temps = data[:, 0]
-Temperatures = np.linspace(Temps[0], Temps[-1], NumberOfTemp)
-print len(Temperatures)
-Mcs = data[:, -1]
-Energy = data[:, 1]*(-1)
-Specific_heat = data[:, 2]
-MagneticMoment = data[:, 3]
-Susceptibility = data[:, 4]
-abs_MagneticMoment = data[:, 5]
-
+MCs = data[:, 0]
+Temps = data[:, 1]
+#print Temps[NumberOfMc*1-NumberOfMc]
+#Temperatures = np.arange(Temps[0], Temps[-1], temp_step)
+Temperatures = np.arange(Temps[0], Temps[-1], 0.2)
+Energy = data[:, 2]
+Specific_heat = data[:, 3]
+MagneticMoment = data[:, 4]
+Susceptibility = data[:, 5]
+abs_MagneticMoment = data[:, 6]
+if data.shape[1] >= 7:
+    acc_configs = data[:, -1]
+    #for l in xrange(1, NumberOfTemp+1):
+        #Plot.PlotMCAcc_configs(MCs[NumberOfMc*(l-1):NumberOfMc*(l)], acc_configs[NumberOfMc*(l-1):NumberOfMc*(l)], filename)
+        #print NumberOfMc*(l-1), NumberOfMc*(l)
+"""
 for l in xrange(1, NumberOfTemp+1):
-    PlotMCEnergy(Mcs[NumberOfMc*(l-1):NumberOfMc*(l)], Energy[NumberOfMc*(l-1):NumberOfMc*(l)], Temps[(NumberOfMc+1)*(l-1)], NumberOfMc)
+    Plot.PlotMCEnergy(MCs[NumberOfMc*(l-1):NumberOfMc*(l)], Energy[NumberOfMc*(l-1):NumberOfMc*(l)], Temps[(NumberOfMc+1)*(l-1)], NumberOfMc, filename)
+    Plot.PlotMCCv(MCs[NumberOfMc*(l-1):NumberOfMc*(l)], Specific_heat[NumberOfMc*(l-1):NumberOfMc*(l)], Temps[(NumberOfMc+1)*(l-1)], filename)
+    Plot.PlotMCMag(MCs[NumberOfMc*(l-1):NumberOfMc*(l)], abs_MagneticMoment[NumberOfMc*(l-1):NumberOfMc*(l)], Temps[(NumberOfMc+1)*(l-1)], filename)
+"""
+"""
+for l in xrange(10, NumberOfTemp+1):
+
+    print "MCs[%.3f] = %.3f" %(NumberOfSteps*(l-1), MCs[NumberOfSteps*(l-1)])
+    print "T = %3f" %Temps[NumberOfSteps*(l-1)]
+    print "MCs[%.3f] = %.3f" %(NumberOfSteps*(l), MCs[NumberOfSteps*(l)-1])
+    print "T = %3f" %Temps[NumberOfSteps*(l)-1]0
+
+    Plot.PlotMCEnergy(MCs[NumberOfSteps*(l-1):NumberOfSteps*(l)-1], Energy[NumberOfSteps*(l-1):NumberOfSteps*(l)-1], Temps[(NumberOfSteps+1)*(l-1)], NumberOfMc, filename)
+    Plot.PlotMCCv(MCs[NumberOfSteps*(l-1):NumberOfSteps*(l)], Specific_heat[NumberOfSteps*(l-1):NumberOfSteps*(l)], Temps[(NumberOfMc+1)*(l-1)], filename)
+    Plot.PlotMCMag(MCs[NumberOfSteps*(l-1):NumberOfSteps*(l)], abs_MagneticMoment[NumberOfSteps*(l-1):NumberOfSteps*(l)], Temps[(NumberOfMc+1)*(l-1)], filename)
+"""
+"""
+for l in xrange(1, NumberOfTemp+1):
+    Plot.PlotMCEnergy(MCs[NumberOfMc*(l-1):NumberOfMc*(l)], Energy[NumberOfMc*(l-1):NumberOfMc*(l)], Temps[(NumberOfMc+1)*(l-1)], NumberOfMc, filename)
+    Plot.PlotMCCv(MCs[NumberOfMc*(l-1):NumberOfMc*(l)], Specific_heat[NumberOfMc*(l-1):NumberOfMc*(l)], Temps[(NumberOfMc+1)*(l-1)], filename)
+    Plot.PlotMCMag(MCs[NumberOfMc*(l-1):NumberOfMc*(l)], abs_MagneticMoment[NumberOfMc*(l-1):NumberOfMc*(l)], Temps[(NumberOfMc+1)*(l-1)], filename)
+"""
 
 #for every total number of Monte Carlo cycles for each temperature, extract the final Cv value and insert in Cv1
-Cv = np.zeros(NumberOfTemp)
-M = np.zeros(NumberOfTemp)
+Cv_mean = np.zeros(NumberOfTemp)
+M_mean = np.zeros(NumberOfTemp)
+accepted = np.zeros(NumberOfTemp)
+E_mean = np.zeros(NumberOfTemp)
 
 for i in xrange(NumberOfTemp):
-    Cv[i] = Specific_heat[i*NumberOfMc]
-    M[i] = MagneticMoment[i*NumberOfMc]
+    Cv_mean[i] = sum(Specific_heat[i*NumberOfSteps:(i+1)*NumberOfSteps])/NumberOfSteps
+    M_mean[i] = sum(abs_MagneticMoment[i*NumberOfSteps:(i+1)*NumberOfSteps])/NumberOfSteps
+    E_mean[i] = sum(Energy[i*NumberOfSteps:(i+1)*NumberOfSteps])/NumberOfSteps
+#    accepted[]
 #    print Cv[i*NumberOfMc]
-
-print Cv
 #PlotCvTemp(Temperatures, Cv)
-PlotMagTemp(Temperatures, M)
-
+Plot.PlotTempEnergy(Temperatures, E_mean, NumberOfSpins, filename)
+Plot.PlotTempCv(Temperatures, Cv_mean, NumberOfSpins, filename)
+Plot.PlotTempMag(Temperatures, M_mean, NumberOfSpins, filename)
 #
