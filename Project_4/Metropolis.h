@@ -9,15 +9,12 @@
 #include <random>
 #include <armadillo>
 #include <string>
-#include "System.h"
 
 using namespace arma;
 
 class Metropolis
 {
 public:
-    //System *Ising;
-
-    void metropolis(int n_spin, int MCs, double Temp, vec ExpValues, int nTemp, std::string filename);//, System &Ising);
+  void metropolis(int n_spin, int MCs, double Temp, vec ExpValues, std::string filename, int choise);
 };
 #endif // METROPOLIS_H
