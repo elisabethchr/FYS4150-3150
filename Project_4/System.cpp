@@ -57,6 +57,44 @@ void System::writefile(int n_spin, int MCs, double Temp, vec average, string fil
   ofile.close();
 }
 
+void System::writefileMPI(int n_spin, int MCs, double Temp, vec average, string filename, int cycle)//, int counter)
+{
+
+  int Cycles = cycle;
+  //int N_accepted = counter;
+  double norm = 1.0/((double) Cycles);
+
+  double averageE = average(0)*norm;
+  double averageE2 = average(1)*norm;
+  double averageM = average(2)*norm;
+  double averageM2 = average(3)*norm;
+  double averageMabs = average(4)*norm;
+  //cout << N_accepted << endl;
+
+  double varE = (averageE2 - averageE*averageE)/(n_spin*n_spin);
+  double varM = (averageM2 - averageMabs*averageMabs)/(n_spin*n_spin);
+  double Cv = (averageE2 - averageE*averageE)/(Temp*Temp);
+  double chi = (averageM2 - averageMabs*averageMabs)/(Temp);
+
+  ofstream ofile;
+  string output = filename;
+  string arg = to_string(MCs);
+  output.append(arg);
+  output.append(".txt");
+  ofile.open(output, ios::app | ios::out);
+
+  ofile << setiosflags(ios::showpoint | ios::uppercase);
+  ofile << setw(10) << setprecision(8) << cycle;
+  ofile << setw(15) << setprecision(8) << Temp;
+  ofile << setw(15) << setprecision(8) << averageE/(n_spin*n_spin);//;
+  ofile << setw(15) << setprecision(8) << averageMabs/(n_spin*n_spin);//;
+  ofile << setw(15) << setprecision(8) << Cv/(n_spin*n_spin);
+  ofile << setw(15) << setprecision(8) << chi/(n_spin*n_spin)<< "\n";
+  //ofile << setw(15) << setprecision(8) << averageM/(n_spin*n_spin);
+  //ofile << setw(10) << setprecision(8) << N_accepted << "\n";// ;
+  ofile.close();
+}
+
 void System::initialize(int n_spin, double Temp, double Ein, double Min, int choise)//, double &E, double &M)
 {
 
@@ -77,8 +115,9 @@ void System::initialize(int n_spin, double Temp, double Ein, double Min, int cho
   else if (choise==1){
     for (int y=0; y<n_spin; y++){
       for (int x=0; x<n_spin; x++){
-        if (RNG(gen) <= 0.5) spin_matrix(y,x) = -1.0;
-        else if (RNG(gen) > 0.5) spin_matrix(x,y) = 1.0;
+        double number = RNG(gen);
+        if (number <= 0.5) spin_matrix(y,x) = -1.0;
+        else if (number > 0.5) spin_matrix(x,y) = 1.0;
 
         M += (double) spin_matrix(y,x);
       }
