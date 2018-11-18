@@ -10,8 +10,7 @@ for args in range(1,len(sys.argv)):
     filenames.append(sys.argv[args])
 
 filenames = glob.glob('*.txt')
-print
-print filenames, len(filenames)
+
 
 def LoadB(file):
     a = file.split('_')[-1]
@@ -30,9 +29,7 @@ def LoadB(file):
 def LoadC(file):
     a = file.split('_')[-1]
     N = int(a.split('.')[0])
-
     data = np.loadtxt(file)
-
     return data
 
 
@@ -55,6 +52,7 @@ def PlotB1Temp(file, Temp):
             plt.tight_layout()
             plt.savefig('Plots/Plotsb/%s_%s.png'%(name,outname))
 
+
 def PlotC1Temp(file, Temp):
     data = LoadC(file)
     outname = file.split('.')[0]
@@ -73,12 +71,7 @@ def PlotC1Temp(file, Temp):
             plt.tight_layout()
             plt.savefig('Plots/Plotsc/%s_%s.png'%(name,outname))
 
-    plt.figure('Number of accepted runs against temperature')
-    plt.plot(data[:,0], data[:,-1], 'g.')
-    plt.xlabel(r'Monte Carlo cycles')
-    plt.ylabel(r'%s'%(names[-1]))
-    plt.tight_layout()
-    #plt.savefig('Plots/Plotsc/NumAcc_ofT_%s.png'%(outname))
+
 
 def PlotAcc(files):
     T1order = []; T1random = []; T24order = []; T24random = []
@@ -92,21 +85,26 @@ def PlotAcc(files):
             data = np.loadtxt(file)
             if len(T1order) == 1:
                 plt.semilogx(mc, data[-1,-1]/float(mc), 'xb', label='T=1, spin up')
-                #plt.plot(mc, data1[-1,-1], '.b', label='T=1, spin up')
+                #plt.loglog(mc, data[-1,-1]/float(mc), 'xb', label='T=1, spin up')
+                #plt.semilogx(mc, data[-1,-1], 'xb', label='T=1, spin up')
             else:
                 plt.semilogx(mc, data[-1,-1]/float(mc), 'xb', label='_nolegend_')
-                #plt.plot(mc, data1[-1,-1], '.b', label='_nolegend_')
+                #plt.loglog(mc, data[-1,-1]/float(mc), 'xb', label='_nolegend_')
+                #plt.semilogx(mc, data[-1,-1], 'xb', label='_nolegend_')
+
         if file.split('_')[3] == 'mcT24order':
             T24order.append(file)
             mc = file.split('_')[-1]
             mc = mc.split('.')[0]
             data = np.loadtxt(file)
             if len(T24order) == 1:
-                #plt.plot(mc, data1[-1,-1], '.r', label='T=2.4, spin up')
-                plt.semilogx(mc, data[-1,-1]/float(mc), '.r', label='T=1, spin up')
+                #plt.semilogx(mc, data[-1,-1], '.r', label='T=2.4, spin up')
+                plt.semilogx(mc, data[-1,-1]/float(mc), '.r', label='T=2.4, spin up')
+                #plt.loglog(mc, data[-1,-1]/float(mc), '.r', label='T=2.4, spin up')
             else:
-                #plt.plot(mc, data1[-1,-1], '.r', label='_nolegend_')
+                #plt.semilogx(mc, data[-1,-1], '.r', label='_nolegend_')
                 plt.semilogx(mc, data[-1,-1]/float(mc), '.r', label='_nolegend_')
+                #plt.loglog(mc, data[-1,-1]/float(mc), '.r', label='_nolegend_')
 
         if file.split('_')[3] == 'mcT1random':
             T1random.append(file)
@@ -114,11 +112,13 @@ def PlotAcc(files):
             mc = mc.split('.')[0]
             data = np.loadtxt(file)
             if len(T1random) == 1:
-                #plt.plot(mc, data1[-1,-1], '.g', label='T=1, spin up')
+                #plt.semilogx(mc, data[-1,-1], '.g', label='T=1, spin random')
                 plt.semilogx(mc, data[-1,-1]/float(mc), 'xg', label='T=1, spin random')
+                #plt.loglog(mc, data[-1,-1]/float(mc), 'xg', label='T=1, spin random')
             else:
-                #plt.plot(mc, data1[-1,-1], '.g', label='_nolegend_')
+                #plt.semilogx(mc, data[-1,-1], '.g', label='_nolegend_')
                 plt.semilogx(mc, data[-1,-1]/float(mc), 'xg', label='_nolegend_')
+                #plt.loglog(mc, data[-1,-1]/float(mc), 'xg', label='_nolegend_')
 
         if file.split('_')[3] == 'mcT24random':
             T24random.append(file)
@@ -126,16 +126,18 @@ def PlotAcc(files):
             mc = mc.split('.')[0]
             data = np.loadtxt(file)
             if len(T24random) == 1:
-                #plt.plot(mc, data1[-1,-1], '.k', label='T=1, spin up')
+                #plt.semilogx(mc, data[-1,-1], '.k', label='T=1, spin random')
                 plt.semilogx(mc, data[-1,-1]/float(mc), '.k', label='T=2.4, spin random')
+                #plt.loglog(mc, data[-1,-1]/float(mc), '.k', label='T=2.4, spin random')
             else:
-                #plt.plot(mc, data1[-1,-1], '.k')
+                #plt.semilogx(mc, data[-1,-1], '.k')
                 plt.semilogx(mc, data[-1,-1]/float(mc), '.k')
+                #plt.loglog(mc, data[-1,-1]/float(mc), '.k')
 
 
     plt.xlabel('Monte Carlo cycles', size=14)
     plt.ylabel('# accepted runs/ MC cycles', size=14)
-    plt.legend(loc=1, ncol=1, fontsize=12)
+    plt.legend(loc='best', ncol=1, fontsize=12)
     plt.savefig('Plots/Plotsc/NumAccRuns_ofMC.png')
 
 def PlotAccTemp(file):
@@ -178,12 +180,14 @@ def Probability(filename):
     name = filename.split('_')[2]
     Tname = name.split('T')[1]
 
-    varE = Cv*T**2 #/(Z())        # ???
+    varE = Cv*T**2
+    print np.mean(E)
     print 'Mean variance of energy: sigma2_E =', np.mean(varE)
     print 'Mean standard deviation of energy: sigma_E =', np.sqrt(np.mean(varE))
 
+    weights = np.ones_like(E)/float(len(E))
     plt.figure('Probability histogram')
-    plt.hist(E, bins=50, facecolor='r')
+    plt.hist(E, bins=50, facecolor='r', weights=weights)
     plt.title('Probability distribution of Energy at T=%g'%(T[-1]))
     plt.xlabel('Energies, [J]', size=14)
     plt.ylabel('Probability', size=14)
@@ -194,6 +198,7 @@ def Probability(filename):
     plt.plot(MC, varE, '-b')
     plt.xlabel('Monte Carlo cycles', size=14)
     plt.ylabel(r'Variance, $\sigma_{E}^{2}$ [J$^2$]', size=14)
+    plt.title(r'Variance of Energy, $\sigma_E^2$, at T=%g'%(T[-1]))
     plt.grid('on')
     plt.tight_layout()
     plt.savefig('Plots/Plotsd/VarianceE_T%s.png'%Tname)
@@ -203,7 +208,7 @@ def Probability(filename):
 filesAcc = glob.glob('Txt_files/cAcc/*.txt')
 
 # Ex P4b:
-PlotB1Temp('Txt_files/4b2x2_10000000.txt', 1.0)
+#PlotB1Temp('Txt_files/4b2x2_10000000.txt', 1.0)
 
 # Ex P4c:
 #PlotC1Temp('Txt_files/p4c20x20_orderT1_1000000.txt', 1)
@@ -215,7 +220,7 @@ PlotB1Temp('Txt_files/4b2x2_10000000.txt', 1.0)
 #PlotAccTemp('Txt_files/cAcc/p4c20x20_diffT_100000.txt')
 
 # Ex P4d:
-#Probability('Txt_files/p4c20x20_orderT1_1000000.txt')
+Probability('Txt_files/p4c20x20_orderT1_1000000.txt')
 #Probability('Txt_files/p4c20x20_orderT24_1000000.txt')
 
 

@@ -38,8 +38,7 @@ int main(int argc, char* argv[])
     Temp0 = atof(argv[4]);
     Temp_final = atof(argv[5]);
   }
-  //n_spin = 2; //MCs = 100;
-  //Temp0 = 1.0; Temp_final = 1.1;
+  
   Temp_step = 0.01;
   double choise = 0; // 0 = orderd, 1= random
   int noIntervalls = MCs/numprocs;
@@ -66,7 +65,6 @@ int main(int argc, char* argv[])
 
   for (double T = Temp0; T<=Temp_final; T+=Temp_step){
     vec ExpValues = zeros(5);
-    //vec totExpValues = zeros(5):
     metroplis.metropolisMPI(n_spin, myLoopBegin, myLoopEnd, MCs, T, ExpValues, filename, choise, myRank);
 
   }

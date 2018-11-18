@@ -69,12 +69,13 @@ void Metropolis::metropolis(int n_spin, int MCs, double Temp, vec ExpValues, str
     // write only every 100 value
     if (cycle >= MCs/10) {
       if ((cycle%100==0) && (cycle != 0)){
-        //cout << "counter = " << counter << endl;
+
         sys.writefile(n_spin, MCs, Temp, ExpValues, filename, cycle, counter);
       }
     }
-  }
-}
+  } // End for loop
+} // End function
+
 
 void Metropolis::metropolisMPI(int n_spin, int myLoopBegin, int myLoopEnd, int MCs, double Temp,
                                 vec ExpValues, string filename, int choise, int myRank)
@@ -119,15 +120,14 @@ void Metropolis::metropolisMPI(int n_spin, int myLoopBegin, int myLoopEnd, int M
         }
       }
     }
-    //if (cycle >= MCs/5){
 
-      ExpValues(0) += Energy;
-      ExpValues(1) += Energy*Energy;
-      ExpValues(2) += MagneticMoment;
-      ExpValues(3) += MagneticMoment*MagneticMoment;
-      ExpValues(4) += fabs(MagneticMoment);
-    //}
-  }
+    ExpValues(0) += Energy;
+    ExpValues(1) += Energy*Energy;
+    ExpValues(2) += MagneticMoment;
+    ExpValues(3) += MagneticMoment*MagneticMoment;
+    ExpValues(4) += fabs(MagneticMoment);
+
+  }// end for loop
 
   // Mpi stuff
   vec totExpValues = zeros(5);
@@ -139,7 +139,6 @@ void Metropolis::metropolisMPI(int n_spin, int myLoopBegin, int myLoopEnd, int M
   if (myRank==0){
     // Write to file
     sys.writefileMPI(n_spin, MCs, Temp, totExpValues, filename);
-
   }
 
-}
+}// End

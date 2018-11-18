@@ -17,13 +17,10 @@ class System
 public:
   int periodic(int i, int n_spin, int add);
   void writefile(int n_spin, int mcs, double Temp, vec average, std::string filename, int cycles, int N_accepted);
-  //void writefileMPI(int n_spin, int MCs, std::string filename, vec Temperature,
-  //                      vec Energy, vec absMagneticMoment, vec Cv, vec chi);
   void writefileMPI(int n_spin, int nExperiments, double Temp, vec ExpValues, std::string filename);
   void initialize(int n_spin, double Temp, double Ein, double Min, int choise);//, double &E, double &M);
   void ComputeAverage(int mcs, int n_spin, vec &ExpValues, double Temp);
 
-  //mat spin_matrix;
   mat Lattice();
   double MagneticMoment();
   double Energy();

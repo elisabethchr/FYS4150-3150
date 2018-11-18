@@ -13,15 +13,19 @@
 using namespace  std;
 using namespace arma;
 
-// output file
 
 int System::periodic(int i, int n_spin, int add)
 {
   return (i+n_spin+add) % (n_spin);
 }
 
+
 void System::writefile(int n_spin, int MCs, double Temp, vec average, string filename, int cycle, int counter)
 {
+  /*
+  Write to file in the first part of the project, write of many cycles. Goes to main.cpp
+  */
+
   int Cycles = cycle;
   int N_accepted = counter;
   double norm = 1.0/((double) Cycles);
@@ -58,7 +62,10 @@ void System::writefile(int n_spin, int MCs, double Temp, vec average, string fil
 
 void System::writefileMPI(int n_spin, int mcs, double Temp, vec ExpValues, string filename)
 {
-
+  /*
+  Write to file in the last parts of the project, write the last value of each MC cycle.
+  Goes to mainMPI.cpp
+  */
   double norm = 1.0/((double) mcs);
 
   ofstream ofile;
@@ -76,8 +83,6 @@ void System::writefileMPI(int n_spin, int mcs, double Temp, vec ExpValues, strin
   ofile << setiosflags(ios::showpoint | ios::uppercase);
   ofile << setw(15) << setprecision(8) << Temp;
   ofile << setw(15) << setprecision(8) << averageE/(n_spin*n_spin);
-  //ofile << setw(15) << setprecision(8) << averageE2/(n_spin*n_spin);
-  //ofile << setw(15) << setprecision(8) << averageMabs/(n_spin*n_spin);
   ofile << setw(15) << setprecision(8) << averageM/(n_spin*n_spin);
   ofile << setw(15) << setprecision(8) << Cv/(n_spin*n_spin);
   ofile << setw(15) << setprecision(8) << chi/(n_spin*n_spin) << "\n";
@@ -85,9 +90,13 @@ void System::writefileMPI(int n_spin, int mcs, double Temp, vec ExpValues, strin
 
 }
 
-void System::initialize(int n_spin, double Temp, double Ein, double Min, int choise)//, double &E, double &M)
-{
 
+void System::initialize(int n_spin, double Temp, double Ein, double Min, int choise)
+{
+  /*
+  Initialize the lattice with spin states. Can both take ordered states with all spin up,
+  and random ordering of the spin with up and down. Also set up the inital energy and Magnetization.
+  */
   E = Ein; M = Min;
   spin_matrix.zeros(n_spin, n_spin);
   random_device rd;
@@ -120,24 +129,32 @@ void System::initialize(int n_spin, double Temp, double Ein, double Min, int cho
     }
   }
 }
+
+
 void System::ComputeAverage(int mcs, int n_spin, vec &ExpValues, double Temp)
 {
+  /*
+  calculate the average values and send them to writefileMPI()
+  */
 
   double norm = 1.0/((double) mcs);
 
-  averageE = ExpValues(0)*norm;//(n_spin);
-  averageE2 = ExpValues(1)*norm;//(n_spin*n_spin);
-  averageM = ExpValues(2)*norm;//(n_spin);
-  averageM2 = ExpValues(3)*norm;//(n_spin*n_spin);
-  averageMabs = ExpValues(4)*norm;//(n_spin);
+  averageE = ExpValues(0)*norm;
+  averageE2 = ExpValues(1)*norm;
+  averageM = ExpValues(2)*norm;
+  averageM2 = ExpValues(3)*norm;
+  averageMabs = ExpValues(4)*norm;
 
   varE = (averageE2 - averageE*averageE)/(n_spin*n_spin);
   varM = (averageM2 - averageMabs*averageMabs)/(n_spin*n_spin);
   Cv = (averageE2 - averageE*averageE)/(Temp*Temp);
   chi = (averageM2 - averageM*averageM)/(Temp);
-  //cout << averageE/(n_spin*n_spin) << " " << averageE2/(n_spin*n_spin) << " " << Cv/(Temp*Temp)<< endl;
+
 }
 
+/*
+Functions for defining variables outside the class
+*/
 mat System::Lattice()
 {
   return spin_matrix;
@@ -156,7 +173,6 @@ double System::MagneticMoment()
 
 double System::meanEnergy()
 {
-  //cout <<averageE<<endl;
   return averageE;
 }
 double System::meanEnergy2()

@@ -9,21 +9,21 @@ beta = 1.0/(kB*T)
 spin = 16
 
 def Z():
-    return 12.0 + 2.0*(np.exp(E*beta) + np.exp(-E*beta))
+    return 12.0 + 4.0*(np.exp(E*beta) + np.exp(-E*beta))
 
 def ExpEnergy():
     Energy = E*(np.exp(-E*beta) - 2*np.exp(E*beta))/Z()
-    return Energy/spin
+    return Energy/2.0
 
 def ExpEnergy2():
     E2 = E*E*(np.exp(-E*beta) + 2*np.exp(E*beta))/Z()
-    return E2/spin
+    return E2/2.0
 
 def MagneticMoment():
-    return (8*np.exp(E*beta) + 4)/(Z()*spin)#12.0
+    return (8*np.exp(E*beta) + 4)/(Z()*2.0)#12.0
 
 def MagneticMoment2():
-    return 8*(4*np.exp(E*beta) + 1)/(Z()*spin)
+    return 8*(4*np.exp(E*beta) + 1)/(Z()*2.0)
 
 def Cv():
     return beta*(ExpEnergy2() - ExpEnergy()*ExpEnergy())/(T)
@@ -47,6 +47,5 @@ def Printing():
     print 'Heat capacity and Suseptibility:'
     print 'Cv = %5.5g,           chi = %5.5g'%(Cv(), chi())
     print '=========================================================='
-
 
 Printing()
