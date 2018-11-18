@@ -25,11 +25,8 @@ def PlotTempEnergy(temps, energy, nSpin, filename):
 #    plt.plot(temps, analytic(temps, nSpin)[0], 'b-')
     plt.xlabel(r'$k_BT$')
     plt.ylabel(r'E/J')
-    #plt.legend([r'$%d\times%d$ Numeric'%(nSpin, nSpin), r'$%d\times%d$ Analytic'%(nSpin, nSpin)], loc='best', fontsize=12)
     plt.title(r'Energy $\langle E \rangle$')
     plt.grid('on')
-    #plt.savefig(filename+'TempE.png')
-    #plt.show()
 
 listCv = []
 def PlotTempCv(temps, Cv, nSpin, filename):
@@ -37,44 +34,30 @@ def PlotTempCv(temps, Cv, nSpin, filename):
 #    plt.plot(temps, analytic(temps, nSpin)[1], 'b-')
     plt.xlabel(r'$k_BT$')
     plt.ylabel(r'$C_V/Jk_B$')
-#    plt.legend([r'$%d\times%d$ Numeric'%(nSpin, nSpin)], loc='best', fontsize=12)
     plt.title(r'Heat capacity $C_V$')
-    #plt.axis('equal')
     plt.grid('on')
-    #plt.savefig(filename+'TempCv.png')
-    #plt.show()
 
 def PlotTempMag(temps, Mag, nSpin, filename):
-    ax = plt.plot(temps, Mag, '.', label=r'$%d\times%d$'%(nSpin, nSpin))
+    plt.plot(temps, Mag, '.', label=r'$%d\times%d$'%(nSpin, nSpin))
 #    plt.plot(temps, analytic(temps, nSpin)[2], 'b-')
     plt.xlabel(r'$k_BT$')
     plt.ylabel(r'$\langle |M| \rangle$')
-#    plt.legend([r'$%d\times%d$ Numeric'%(nSpin, nSpin), r'$%d\times%d$ Analytic'%(nSpin, nSpin)], loc='best', fontsize=12)
     plt.title(r'$\langle |M| \rangle$')
-    #plt.axis('equal')
     plt.grid('on')
-    #plt.savefig('Plots/Plots_e/' + filename + 'TempMag.png')
-    #plt.show()
 
 def PlotTempChi(temps, chi, nSpin, filename):
     plt.plot(temps, chi, '.', label=r'$%d\times%d$'%(nSpin, nSpin))
 #    plt.plot(temps, analytic(temps, nSpin)[3], 'b-')
     plt.xlabel(r'$k_BT$')
     plt.ylabel(r'$\chi$')
-    #plt.legend([r'$%d\times%d$ Numeric'%(nSpin, nSpin), r'$%d\times%d$ Analytic'%(nSpin, nSpin)], loc='best', fontsize=12)
     plt.title(r'Susceptibility $\chi$')
-    #plt.axis('equal')
     plt.grid('on')
-    #plt.savefig(filename+'TempChi.png')
-    #plt.show()
 
 def PlotMCAcc_configs(MC, acc, filename):
     plt.plot(MC, acc, 'g.')
     plt.xlabel('Monte Carlo cycles')
     plt.ylabel(r'Accepted states')
     plt.title(r'Accepted states')
-    #plt.savefig(filename+'MC_acceptedstates.png')
-    #plt.axis('equal')
     plt.grid('on')
     plt.show()
 
@@ -82,10 +65,8 @@ def PlotTempAcc(T, acc, nSpin, filename):
     plt.plot(T, acc, 'r-')
     plt.xlabel('Temperatures')
     plt.ylabel('Accepted states')
-#    plt.legend([r'T = %.3f' %T], loc='best', fontsize=12)
     plt.title(r'Energy $\langle E \rangle$')
     plt.grid('on')
-#    plt.savefig(filename+'T_'+str(T)+'MC_E.png')
     plt.show()
 
 
@@ -96,8 +77,8 @@ def PlotMCEnergy(MC, energy, T, nSpin, filename):
     plt.legend([r'T = %.3f' %T], loc='best', fontsize=12)
     plt.title(r'Energy $\langle E \rangle$')
     plt.grid('on')
-    plt.savefig('Plots/Plots_d/'+filename+'T_'+str(T)+'MC_E.png')
-    plt.show()
+    #plt.savefig('Plots/Plots_d/'+filename+'T_'+str(T)+'MC_E.png')
+    #plt.show()
 
 def PlotMCCv(MC, Cv, T, nSpin, filename):
     plt.plot(MC, Cv, 'r-')
@@ -110,15 +91,16 @@ def PlotMCCv(MC, Cv, T, nSpin, filename):
     plt.show()
 
 def PlotMCMag(MC, mag, T, nSpin, filename):
-    plt.plot(MC, mag, 'r-')
+    c = filename.split('_')[-1]
+    config = c.split('.')[0]
+    plt.plot(MC, mag, '-', label='T=%g %s' %(T, config))
     plt.xlabel(r'$k_BT$')
     plt.ylabel(r'$\langle |M| \rangle$')
-    plt.legend([r'T = %.3f' %T], loc='best', fontsize=12)
-#    plt.legend([r'$%d\times%d$ Numeric'%(nSpin, nSpin), r'$%d\times%d$ Analytic'%(nSpin, nSpin)], loc='best', fontsize=12)
+    #plt.legend([r'T = %.3f' %T], loc='best', fontsize=12)
     plt.title(r'Magnetic Moment $\langle |M| \rangle$')
     plt.grid('on')
     #plt.savefig(filename+'T_'+str(T)+'MC_Mag.png')
-    plt.show()
+#    plt.show()
 
 def PlotProbE(energy, temps, filename):
     #c = filename.split('_')[-1]
