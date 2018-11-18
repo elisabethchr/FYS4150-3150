@@ -76,7 +76,8 @@ void Metropolis::metropolis(int n_spin, int MCs, double Temp, vec ExpValues, str
   }
 }
 
-void Metropolis::metropolisMPI(int n_spin, int MCs, double Temp, vec ExpValues, string filename, int choise)
+void Metropolis::metropolisMPI(int n_spin, int myLoopBegin, int myLoopEnd, int MCs, double Temp,
+                                vec ExpValues, string filename, int choise, int myRank)
 {
   random_device rd;
   mt19937_64 gen(rd());
@@ -89,16 +90,14 @@ void Metropolis::metropolisMPI(int n_spin, int MCs, double Temp, vec ExpValues, 
 
   double Energy = sys.Energy();
   double MagneticMoment = sys.MagneticMoment();
-  vec w = zeros(2*fabs(Energy)+1);
-  //cout << "E0=" << Energy << " M0=" << MagneticMoment << " at T=" << Temp << endl;
+  vec w = zeros(17);
 
-
-  for (int dE=Energy; dE<=fabs(Energy); dE+=4){
-    w(dE+fabs(Energy)) = exp(-dE/Temp);
+  for (int dE=-8; dE<=8; dE+=4){
+    w(dE+8) = exp(-dE/Temp);
   }
 
   // Monte Carlo
-  for (int cycle=1; cycle<=MCs; cycle++){
+  for (int cycle=myLoopBegin; cycle<=myLoopEnd; cycle++){
     int counter = 0;
     for (int x=0; x<n_spin; x++){
       for (int y=0; y<n_spin; y++){
@@ -120,27 +119,27 @@ void Metropolis::metropolisMPI(int n_spin, int MCs, double Temp, vec ExpValues, 
         }
       }
     }
+    //if (cycle >= MCs/5){
 
-    ExpValues(0) += Energy;
-    ExpValues(1) += Energy*Energy;
-    ExpValues(2) += MagneticMoment;
-    ExpValues(3) += MagneticMoment*MagneticMoment;
-    ExpValues(4) += fabs(MagneticMoment);
-
-    // write only every 100 value
-    //if (cycle >= MCs/10) {
-    //  if ((cycle%100==0) && (cycle != 0)){
-    //    sys.writefileMPI(n_spin, MCs, Temp, ExpValues, filename, cycle);//, counter);
-    //  }
+      ExpValues(0) += Energy;
+      ExpValues(1) += Energy*Energy;
+      ExpValues(2) += MagneticMoment;
+      ExpValues(3) += MagneticMoment*MagneticMoment;
+      ExpValues(4) += fabs(MagneticMoment);
     //}
   }
+
   // Mpi stuff
   vec totExpValues = zeros(5);
   for (int i=0; i<5; i++){
+    // Gather the values from the cores
     MPI_Reduce(&ExpValues[i], &totExpValues[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
   }
-  //if (myRank==0){
-  sys.writefileMPI(n_spin, MCs, Temp, totExpValues, filename, MCs);
-  //}
-  //cout << "Number of accepted runs: " << counter << endl;
+
+  if (myRank==0){
+    // Write to file
+    sys.writefileMPI(n_spin, MCs, Temp, totExpValues, filename);
+
+  }
+
 }

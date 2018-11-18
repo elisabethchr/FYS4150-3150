@@ -46,6 +46,8 @@ def PlotB1Temp(file, Temp):
 
     for ind, name in enumerate(names):
         if ind >= 1 and ind < len(names):
+            print 'Mean value for %s = %g'%(names[ind], np.mean(data[:,ind]))
+
             plt.figure('%s at T=%g'%(name, Temp))
             plt.plot(data[:,-1], data[:,ind], '-b')
             plt.xlabel('Monte Carlo cycles')
@@ -154,7 +156,7 @@ def PlotAccTemp(file):
 
     plt.figure('Number of accepted runs against temperature')
     plt.plot(Temp, N_accepted, 'xk', label='Data points')
-    plt.plot(Temp, slope*Temp + intercept, '-b', label=r'Fit, $\sigma=%.3f$'%std_err)
+    plt.plot(Temp, slope*Temp + intercept, '-b', label=r'Lin. Regresion, $\sigma=%.3f$'%std_err)
     plt.xlabel(r'Temperature, $T$ [K]', size=14)
     plt.ylabel(r'Number of accepted runs', size=14)
     plt.legend(loc=4, fontsize=12)
@@ -175,7 +177,10 @@ def Probability(filename):
 
     name = filename.split('_')[2]
     Tname = name.split('T')[1]
-    varE = Cv*T**2/(Z())        # ???
+
+    varE = Cv*T**2 #/(Z())        # ???
+    print 'Mean variance of energy: sigma2_E =', np.mean(varE)
+    print 'Mean standard deviation of energy: sigma_E =', np.sqrt(np.mean(varE))
 
     plt.figure('Probability histogram')
     plt.hist(E, bins=50, facecolor='r')
@@ -193,10 +198,12 @@ def Probability(filename):
     plt.tight_layout()
     plt.savefig('Plots/Plotsd/VarianceE_T%s.png'%Tname)
 
+
+
 filesAcc = glob.glob('Txt_files/cAcc/*.txt')
 
 # Ex P4b:
-#PlotB1Temp('Txt_files/4b2x2_10000000.txt', 1.0)
+PlotB1Temp('Txt_files/4b2x2_10000000.txt', 1.0)
 
 # Ex P4c:
 #PlotC1Temp('Txt_files/p4c20x20_orderT1_1000000.txt', 1)

@@ -1,5 +1,5 @@
 /*
-Compute the 2D ising model.
+Compute the 2D ising model with parallelization
 */
 #include <mpi.h>
 #include <cmath>
@@ -35,17 +35,18 @@ int main(int argc, char* argv[])
     filename = argv[1];
     MCs = atoi(argv[2]);
     n_spin = atoi(argv[3]);
-    //Temp0 = atof(argv[4]);
-    //Temp_final = atof(argv[5]);
+    Temp0 = atof(argv[4]);
+    Temp_final = atof(argv[5]);
   }
   //n_spin = 2; //MCs = 100;
-  Temp0 = 2.0; Temp_final = 2.3;
-  Temp_step = 0.05;
+  //Temp0 = 1.0; Temp_final = 1.1;
+  Temp_step = 0.01;
   double choise = 0; // 0 = orderd, 1= random
   int noIntervalls = MCs/numprocs;
   int myLoopBegin = myRank*noIntervalls + 1;
   int myLoopEnd = (myRank+1)*noIntervalls;
   if ((myRank==numprocs-1) && (myLoopEnd < MCs)) myLoopEnd = MCs;
+  cout << myLoopBegin << " " << myLoopEnd<< " " << noIntervalls << endl;
 
   // Broadcast to all nodes common variable:
   MPI_Bcast (&n_spin, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -54,7 +55,8 @@ int main(int argc, char* argv[])
   MPI_Bcast (&Temp_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   cout << "======================================================" << endl;
-  cout << "The Ising model using Number of MC cycles = " << MCs << ", with parallelization" << endl;
+  cout << "The Ising model using Number of MC cycles = " << MCs << endl;
+  cout << "With parallelization and rank = "<< myRank << endl;
   Metropolis metroplis;
   System sys;
 
@@ -65,12 +67,7 @@ int main(int argc, char* argv[])
   for (double T = Temp0; T<=Temp_final; T+=Temp_step){
     vec ExpValues = zeros(5);
     //vec totExpValues = zeros(5):
-    metroplis.metropolisMPI(n_spin, MCs, T, ExpValues, filename, choise);
-
-    // here or in
-    //for (int i=0; i<5; i++){
-    //  MPI_Reduce(&ExpValues[i], &totExpValues[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    //}
+    metroplis.metropolisMPI(n_spin, myLoopBegin, myLoopEnd, MCs, T, ExpValues, filename, choise, myRank);
 
   }
   TimeEnd = MPI_Wtime();
