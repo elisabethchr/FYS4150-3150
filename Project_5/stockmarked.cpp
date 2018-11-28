@@ -12,16 +12,17 @@
 using namespace std;
 using namespace arma;
 
-void StockMarked::Model(int Nagents, int transactions, string filename, double m0, vec outvalues)
+//void StockMarked::Model(int Nagents, int transactions, double m0, vec agents)
+vec StockMarked::Model(int Nagents, int transactions, double m0, vec agents)
 {
   // Set up uniform distribution from 0 to 1
   random_device rd;
   mt19937_64 gen(rd());
   uniform_real_distribution<double> RandomNumberGenerator(0.0,1.0);
 
-  // initialize
-  initialize(Nagents, m0);
-  vec agents = Agents();
+  // initialize vector with the agents with startup capital of m0
+  agents.fill(m0);
+
   vec agents_post = zeros(Nagents);
   vec Gibbs = zeros(Nagents);
   double beta = 1.0/m0;
@@ -29,9 +30,9 @@ void StockMarked::Model(int Nagents, int transactions, string filename, double m
   double var_m, exp_m, prev_exp_m;
   prev_exp_m = 1e8; // some big number.
 
-
   // run transactions
   for (int trans=0; trans<transactions; trans++){
+
     int i = (int) (RandomNumberGenerator(gen) * (double) Nagents);
     int j = (int) (RandomNumberGenerator(gen) * (double) Nagents);
     double eps = (double) (RandomNumberGenerator(gen));
@@ -45,8 +46,8 @@ void StockMarked::Model(int Nagents, int transactions, string filename, double m
     agents(j) -= dm;
 
     // find the variance for each transaction, and check if equilibrium is reached
-    var_m = var(agents);    // why variance???
-    if (trans%1000 == 0){
+    var_m = var(agents);
+    if (trans%10000 == 0){
       exp_m = var_m/trans;
 
       // check for equilibrium state
@@ -63,19 +64,41 @@ void StockMarked::Model(int Nagents, int transactions, string filename, double m
 
     }
   }
+
+  return agents;
 }
 
-void StockMarked::initialize(int Nagents, double m0)
+void StockMarked::Simulation(int Nagents, int runs, int transactions, double m0, string filename)
 {
-  vec agents = zeros(Nagents);
-  for (int i=0; i<Nagents; i++){
-    agents(i) = m0;
+  vec mean_agents = zeros(Nagents);
+  clock_t start, stop;
+  start = clock();
+  for (int i=0; i<runs; i++){
+    // Metropolis/Monte carlo stuff:
+    vec agents = zeros(Nagents);
+
+    agents = Model(Nagents, transactions, m0, agents);
+
+    mean_agents += (agents);
+
   }
+
+  mean_agents = mean_agents/(runs);       // Find mean value of the agents
+
+  // write to file:
+  WriteToFile(Nagents, mean_agents, filename);
+
+  stop = clock();
+  double time_used = (double)(stop - start)/(CLOCKS_PER_SEC );
+  cout << "Time used: t = " << time_used << " s." << endl;
+
 }
+
 
 void StockMarked::WriteToFile(int Nagents, vec mean_agents, string filename)
 {
   ofstream mfile;
+  filename.append(".txt");
   mfile.open(filename, ios::app | ios::out);
   for (int i=0; i<Nagents; i++){
     mfile << setw(15) << setprecision(8) << mean_agents(i) << "\n";

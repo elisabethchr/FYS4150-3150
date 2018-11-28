@@ -15,26 +15,28 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   string filename;
-  int runs; int exponent = 7; double m0;
+  int exponent = 7; double m0;
   if (argc <= 1){
     cout << "Bad usage: \n";
-    cout << "type filename for output, number of runs, start money" << endl;
+    cout << "type filename for output, start money" << endl;
     exit(1);
   }
   else{
     filename = argv[1];
-    m0 = atof(argv[3]);                      // Initial money
+    m0 = atof(argv[2]);                      // Initial money
 
   }
 
   int Nagents = 500;
-  runs = 1e3;             // Experiments                    // Number of agents
+  int runs = 1;             // Experiments                    // Number of agents
   int transactions = pow(10, exponent);       // Number of MC cycles
   vec mean_agents = zeros(Nagents);
 
   cout << "======================================================" << endl;
   StockMarked SM;
 
+  SM.Simulation(Nagents, runs, transactions, m0, filename);
+  /*
   clock_t start, stop;
   start = clock();
   for (int i=1; i<runs; i++){
@@ -46,14 +48,16 @@ int main(int argc, char* argv[])
     mean_agents += sort(outvalues);
 
   }
+  mean_agents.print("Mean agents: ");
   mean_agents = mean_agents/runs;
 
   // write to file:
-  SM.WriteToFile(Nagents, mean_agents, filename);
+  //SM.WriteToFile(Nagents, mean_agents, filename);
 
   stop = clock();
-  double time_used = (stop-start)/(CLOCKS_PER_SEC );
+  double time_used = (double)(stop - start)/(CLOCKS_PER_SEC );
   cout << "Time used: t = " << time_used << " s." << endl;
+  */
   cout << "======================================================" << endl;
 
 

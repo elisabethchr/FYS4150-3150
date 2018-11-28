@@ -16,13 +16,16 @@ using namespace arma;
 class StockMarked
 {
   public:
-    void Model(int Nagents, int transactions, string filename, double m0, vec outvalues);
-    void initialize(int Nagents, double m0);
+    //void Model(int Nagents, int transactions, double m0, vec agents);
+    vec Model(int Nagents, int transactions, double m0, vec agents);
+    void Simulation(int Nagents, int runs, int transactions, double m0, string filename);
     void WriteToFile(int Nagents, vec mean_agents, string filename);
+
     vec Agents();
 
   private:
     vec agents;
+    vec outvalues;
 
 };
 #endif // STOCKMARKED_H
