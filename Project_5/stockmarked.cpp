@@ -13,7 +13,7 @@ using namespace std;
 using namespace arma;
 
 //void StockMarked::Model(int Nagents, int transactions, double m0, vec agents)
-vec StockMarked::Model(int Nagents, int transactions, double m0, vec agents, double lmbd)
+vec StockMarked::Model(int Nagents, int transactions, double m0, vec agents, double lmbd, double alpha)
 {
   // Set up uniform distribution from 0 to 1
   random_device rd;
@@ -23,14 +23,13 @@ vec StockMarked::Model(int Nagents, int transactions, double m0, vec agents, dou
   // initialize vector with the agents with startup capital of m0
   agents.fill(m0);
 
-  vec agents_post = zeros(Nagents);
-  vec Gibbs = zeros(Nagents);
   double beta = 1.0/m0;
   double dm = 0.01;
   double var_m, exp_m, prev_exp_m;
   prev_exp_m = 1e8; // some big number.
 
   // run transactions
+  //int j;
   for (int trans=1; trans<transactions; trans++){
 
     int i = (int) (RandomNumberGenerator(gen) * (double) Nagents);
@@ -39,15 +38,22 @@ vec StockMarked::Model(int Nagents, int transactions, double m0, vec agents, dou
 
     double mi = agents(i);
     double mj = agents(j);
+    double randomnumber = (double) (RandomNumberGenerator(gen));
+
+    if (trans < 2){
+      cout <<trans<< ": "<< i << " " << j << " - "<< mi << " " << mj << endl;
+    }
 
     double dm = (eps*mj - (1.0 - eps)*mi)*(1.0 - lmbd);
+
+    // Check if the agents are of the same transaction interest
+    //if (pow(fabs(dm), -alpha) < randomnumber){
 
     agents(i) += dm;
     agents(j) -= dm;
 
     // find the variance for each transaction, and check if equilibrium is reached
     var_m = var(agents);
-
     if (trans%10000 == 0){
       exp_m = var_m/trans;
 
@@ -62,13 +68,13 @@ vec StockMarked::Model(int Nagents, int transactions, double m0, vec agents, dou
       }
 
       var_m = 0;
-    } // end if test 1
+      } // end if test 1
+    //}
   }
-  //Gibbs = beta*exp(-beta*agents);
   return agents;
 }
 
-void StockMarked::Simulation(int Nagents, int runs, int transactions, double m0, string filename, double lmbd)
+void StockMarked::Simulation(int Nagents, int runs, int transactions, double m0, string filename, double lmbd, double alpha)
 {
   vec mean_agents = zeros(Nagents);
   clock_t start, stop;
@@ -78,7 +84,7 @@ void StockMarked::Simulation(int Nagents, int runs, int transactions, double m0,
     cout << "Run no. " << i<< ": ";
     vec agents = zeros(Nagents);
 
-    agents = Model(Nagents, transactions, m0, agents, lmbd);
+    agents = Model(Nagents, transactions, m0, agents, lmbd, alpha);
 
     mean_agents += sort(agents);      // sort or not??
 

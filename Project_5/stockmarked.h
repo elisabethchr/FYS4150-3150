@@ -17,8 +17,8 @@ class StockMarked
 {
   public:
     //void Model(int Nagents, int transactions, double m0, vec agents);
-    vec Model(int Nagents, int transactions, double m0, vec agents, double lmbd);
-    void Simulation(int Nagents, int runs, int transactions, double m0, string filename, double lmbd);
+    vec Model(int Nagents, int transactions, double m0, vec agents, double lmbd, double alpha);
+    void Simulation(int Nagents, int runs, int transactions, double m0, string filename, double lmbd, double alpha);
     void WriteToFile(int Nagents, vec mean_agents, string filename);
 
     vec Agents();
