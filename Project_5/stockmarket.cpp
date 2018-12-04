@@ -16,7 +16,7 @@ using namespace arma;
 vec StockMarked::Model(int Nagents, int transactions, double m0, vec agents, double lmbd, double alpha)
 {
 
- // Compute the exchange model for a trading process between two partners with an initial capital m0
+    // Compute the exchange model for a trading process between two partners with an initial capital m0
 
 
     // Set up uniform distribution from 0 to 1
@@ -27,46 +27,54 @@ vec StockMarked::Model(int Nagents, int transactions, double m0, vec agents, dou
     // Initialize all agents with a startup capital of m0
     agents.fill(m0);
 
-    // Stating parameters involved in the computations
-    double dm, mj, mi;
     double var_m, exp_m, prev_exp_m;
-    double p_ij;
-    int i, j;
-    double eps, r;
     prev_exp_m = 1e10;
 
     // Run transactions
     for (int trans=1; trans<transactions; trans++)
     {
+        // Stating parameters involved in the computations
+        double dm, mj, mi;
+        double p_ij;
+        double eps, r;
+
         // Pick a pair of agents at random
-        i = (int) (RandomNumberGenerator(gen) * (double) Nagents);
-        j = (int) (RandomNumberGenerator(gen) * (double) Nagents);
+        int i = (int) (RandomNumberGenerator(gen) * (double) Nagents);
+        int j = (int) (RandomNumberGenerator(gen) * (double) Nagents);
         eps = (double) (RandomNumberGenerator(gen));
         r = (double) (RandomNumberGenerator(gen));
 
-        if(trans == 1){cout << "i: " << i << " j: " << j << "\n";}
-
+        //if(trans == 1){cout << "i: " << i << " j: " << j << "\n";}
+        mi = agents(i);
+        mj = agents(j);
 
         // Calculate probabilities of interaction:
         if(mi != mj)
         {
             p_ij = pow(fabs(mi - mj), -alpha);
-            cout << "mi not equal mj" << "\n";
+            //cout << "mi not equal mj" << "\n";
         }
         else
         {
             p_ij = 1;
+            //cout << "mi equal to mj" << "\n";
         }
+
         // Compute the transaction if:
         // - the probabiltiy is greater than some random number r
         // - the two agents is not the same agent
         if (i!= j && p_ij>r)
         {
+            //cout << "In" << "\n";
             dm = (eps*mj - (1.0 - eps)*mi)*(1.0 - lmbd);
+            if(trans == 18293){
+            cout << "eps = " << eps << "\n";
+            cout << "eps*mj = " << eps*mj << "(1-eps)*mi = " << mi - eps*mi << endl;
+            }
             agents(i) += dm;
             agents(j) -= dm;
         }
-        //cout << "i: " << i << " j: " << j << "\n";
+
         // Find the average variance for each transaction
         var_m += var(agents);
         if ( i!=j && trans%10000 == 0)
@@ -95,7 +103,7 @@ vec StockMarked::Model(int Nagents, int transactions, double m0, vec agents, dou
 void StockMarked::Simulation(int Nagents, int runs, int transactions, double m0, string filename, double lmbd, double alpha)
 {
 
-     // Run the simulations and write data to file
+    // Run the simulations and write data to file
 
     vec mean_agents = zeros(Nagents);
     clock_t start, stop;
@@ -126,7 +134,7 @@ void StockMarked::Simulation(int Nagents, int runs, int transactions, double m0,
 void StockMarked::WriteToFile(int Nagents, vec mean_agents, string filename)
 {
 
-     // Writing data to file
+    // Writing data to file
 
     ofstream mfile;
     filename.append(".txt");
