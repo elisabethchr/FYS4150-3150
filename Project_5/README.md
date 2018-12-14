@@ -8,3 +8,4 @@ This project aims to construct an algorithm for simulating the wealth distributi
 
   - main.cpp
   - stockmarked.h/cpp
+  - Histogram.py
