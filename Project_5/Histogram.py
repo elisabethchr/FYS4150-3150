@@ -83,14 +83,16 @@ def WithSaving(files):
 def plot5d(files1, files2, label):
     alpha = [0.5, 1.0, 1.5, 2.0]
     color = ['b', 'r', 'g', 'm']
-
-    f, (ax1, ax2) = plt.subplots(2,1)
-
+    tail = 0
+    f, (ax1, ax2) = plt.subplots(2,1, figsize=(6,6))
+    #f2, ax3 = plt.subplots()
+    f2, (ax3,ax4) = plt.subplots(2,1, sharex=True, figsize=(6,6))
+    f3, ax5 = plt.subplots()
     for ind in range(len(files1)):
 
         data1 = np.loadtxt(files1[ind])     # No saving
         data2 = np.loadtxt(files2[ind])     # Saving
-        N = np.mean(len(data1) + len(data2))
+        N = len(data1)
 
         w_m1, bins1 = np.histogram(data1/m0, bins=N/10, normed=True)
         w_m2, bins2 = np.histogram(data2/m0, bins=N/10, normed=True)
@@ -103,13 +105,51 @@ def plot5d(files1, files2, label):
 
         ax2.loglog(data2[0::10], w_m2/float(N), c=color[ind], linestyle='--', label=r'$\alpha=%g$'%alpha[ind])
         ax2.set_xlabel(r'$m/m_0$', size=14)
-        ax2.set_ylabel(r'$w_m/N_{agents}$', size=14)
+        ax2.set_ylabel(r'With saving, $w_m/N_{agents}$', size=14)
         ax2.legend(loc=1, fontsize=12)
 
+        x = data1/m0
+        n = 1.0 + 3.0*alpha[ind]/(1.0+alpha[ind])
+        an = n**(n) / special.gamma(n)
+        P = x**(-n-1.0) * an * np.exp(-n*x)
+        tail, bins3 = np.histogram(data1/m0, bins=N/5, normed=True)
 
+        ax3.loglog(data1[0::10], w_m1/float(N), c=color[ind], linestyle='-')
+        ax3.loglog(data1, 10*data1**(-1.-alpha[ind])/m0, c=color[ind], linestyle=':', label=r'$m^{-1-\alpha}, \alpha=%g$'%alpha[ind])
+        #ax3.set_xlabel(r'$m/m_0$', size=14)
+        ax3.set_ylabel(r'$w_m/N_{agents}$', size=14)
+        ax3.legend(loc=3, fontsize=12, bbox_to_anchor=(0., 0.98, 1., .102), ncol=2, mode='expand')
+        ax3.grid('on')
+        ax3.set_xlim(1e1,2e2)
+        ax3.set_ylim(8e-6, 1e-3)
+
+        ax4.loglog(data2[0::10], w_m2/float(N), c=color[ind], linestyle='-', label=r'$m^{-1-\alpha}, \alpha=%g$'%alpha[ind])
+        ax4.loglog(data2, 10*data2**(-1.-alpha[ind])/m0, c=color[ind], linestyle=':')
+        ax4.set_xlabel(r'$m/m_0$', size=14)
+        ax4.set_ylabel(r'With saving, $w_m/N_{agents}$', size=14)
+        #ax4.legend(loc=3, fontsize=12)
+        ax4.grid('on')
+        ax4.set_xlim(1e1,2e2)
+        ax4.set_ylim(1e-5, 3e-3)
+
+
+        ax5.loglog(data2[0::10], w_m2/float(N), c=color[ind], linestyle='-')
+        ax5.loglog(data2, 30*data2**(-1.-alpha[ind]-0.5)/m0, c=color[ind], linestyle=':', label=r'$m^{-1-\alpha-\lambda}$')
+        ax5.set_xlabel(r'$m/m_0$', size=14)
+        ax5.set_ylabel(r'$w_m/N_{agents}$', size=14)
+        ax5.set_title(r'Tail fitting with: $\lambda=0.5, \alpha=\{%g, %g, %g, %g\}$'%(alpha[0],alpha[1],alpha[2],alpha[3]))
+        ax5.legend(loc=1, fontsize=12)
+        ax5.grid('on')
+        ax5.set_xlim(1e1,2e2)
+        ax5.set_ylim(1e-5, 3e-3)
+
+
+    f2.subplots_adjust(hspace=0.03)
 
     f.savefig('Plots/Part_d_%s.png'%label)
-
+    #f2.savefig('Plots/Part_d_powlaw_%s.png'%label)
+    f3.savefig('Plots/Part_d_powlaw_with_saving_%s.png'%label)
+    f2.savefig('Plots/Powlaw_part_d_%s.png'%label)
 
 
 def Plot5e(files, a):
@@ -122,7 +162,7 @@ def Plot5e(files, a):
     lmbd = [0, 0.5]
     j=0
 
-    f, (ax1, ax2) = plt.subplots(1,2)
+    f, (ax1, ax2) = plt.subplots(1,2, figsize=(7,5))
     f.suptitle(r'Neighbouring interaction, $\alpha = %g$, with and without saving'%(a), fontsize=14)
     for ind,file in enumerate(files):
         name = file.split('_')
@@ -140,6 +180,7 @@ def Plot5e(files, a):
                 ax1.legend(loc=3, ncol=1, fontsize=12)
                 ax1.set_title(r'With no saving, $\lambda = %g$'%(lmbd[0]))
                 ax1.set_xlim(3e-3, 100)
+                ax1.set_ylim(5e-3,1e1)
 
 
             if name[i] == 'L05':
