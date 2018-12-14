@@ -1,4 +1,4 @@
-# Project 4
+# Project 5
 FYS4150/FYS3150: Project 5 by Eirik Bratli and Elisabeth Christensen
 
 #### Project description:
