@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     double m0, lmbd, alpha, gamma;
     if (argc <= 1){
         cout << "Bad usage: \n";
-        cout << "type filename for output, inital capital, saving parameter [0,1), wealth parameter [0, 1), and transactions parmeter [0, 1)" << endl;
+        cout << "type filename for output, inital capital, saving parameter [0,1), wealth parameter [o, ->), and transactions parmeter [0, ->)" << endl;
         exit(1);
     }
     else{
