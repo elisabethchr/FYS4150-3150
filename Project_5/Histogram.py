@@ -134,7 +134,7 @@ def plot5d(files1, files2, label):
 
 
         ax5.loglog(data2[0::10], w_m2/float(N), c=color[ind], linestyle='-')
-        ax5.loglog(data2, 30*data2**(-1.-alpha[ind]-0.5)/m0, c=color[ind], linestyle=':', label=r'$m^{-1-\alpha-\lambda}$')
+        ax5.loglog(data2, 30*data2**(-1.-alpha[ind]-0.5)/m0, c=color[ind], linestyle=':', label=r'$\alpha=%g,m^{-1-\alpha-\lambda}$'%alpha[ind])
         ax5.set_xlabel(r'$m/m_0$', size=14)
         ax5.set_ylabel(r'$w_m/N_{agents}$', size=14)
         ax5.set_title(r'Tail fitting with: $\lambda=0.5, \alpha=\{%g, %g, %g, %g\}$'%(alpha[0],alpha[1],alpha[2],alpha[3]))
@@ -216,7 +216,7 @@ gamma_files = glob.glob('Txt_files/part_e/*.txt')
 #Histogram(file[0])
 #Gibbs(file[0])
 #WithSaving(saving_files)
-#plot5d(NoSaving1000, Saving1000, 'N1000')
+plot5d(NoSaving1000, Saving1000, 'N1000')
 #plot5d(NoSaving500, Saving500, 'N500')
 #Plot5e(gamma_files, 1.0)
 
